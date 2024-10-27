@@ -16,11 +16,13 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    echo 'Installing Dependencies...'
-                    // Install dependencies using pip
+                    // Python Path
                     def python = '"C:\\Program Files\\Python313\\python"'
-                    bat "${python} --version"
-                    bat "${python} -m pip install -r requirements.txt"
+                    // Valiadting Python Version
+                    def version = bat "${python} --version"
+                    echo "Installing Dependencies... ${version}"
+                    // Install dependencies using pip
+                    //bat "${python} -m pip install -r requirements.txt"
                 }
             }
         }
