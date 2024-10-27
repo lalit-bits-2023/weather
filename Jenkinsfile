@@ -10,7 +10,7 @@ pipeline {
             steps {
                 // Cloning GIT Repository
                 echo 'Cloning Repository...'
-                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'ory
+                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
         }
         stage('Version') {
