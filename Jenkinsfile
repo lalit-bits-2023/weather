@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        // Define docker image name and tag
+        def python = ' C:\Users\lalit\AppData\Local\Microsoft\WindowsApps\python'
+    }
 
     stages {
         stage('Clone Repository') {
@@ -14,7 +18,7 @@ pipeline {
                 script {
                     echo 'Cloning Repository...'
                     // Install dependencies using pip
-                    bat 'python -m pip install -r requirements.txt'
+                    bat '${python} -m pip install -r requirements.txt'
                 }
             }
         }
