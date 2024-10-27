@@ -21,9 +21,9 @@ pipeline {
                     //def python = '"C:\\Program Files\\Python313\\python"'
                     // Valiadting Python Version
                     // Capture the output of the Python version command
-                    def versionOutput = bat(script: "${python} --version", returnStdout: true).trim()
-                    def version = versionOutput.trim()
-                    echo ">>${version}<<>>${versionOutput}>>"
+                    def version = bat(script: "${python} --version", returnStdout: true)
+                    version = version.split()[-1]
+                    echo ">>${version}<<"
                     // Install dependencies using pip
                     //bat "${python} -m pip install -r requirements.txt"
                 }
