@@ -6,14 +6,14 @@ pipeline {
     }
 
     stages {
-        stage('Clone') {
-            steps {
-                // Cloning GIT Repository
-                echo 'Cloning Repository...'
-                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
-            }
-        }
-        stage('Version') {
+        //stage('Clone Repository') {
+        //    steps {
+        //    // Cloning GIT Repository
+        //        echo 'Cloning Repository...'
+        //        git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
+        //    }
+        //}
+        stage('Check Python Version') {
             steps {
                 script {
                     // Validating Python Version
@@ -30,12 +30,22 @@ pipeline {
                 }
             }
         }
-        stage('Dependency') {
+        stage('Install Dependencies') {
             steps {
                 script {
                     // Install dependencies using pip
                     echo 'Installaing Python Dependencies...'
                     bat "${python} -m pip install -r requirements.txt"
+
+                }
+            }
+        }
+        stage('Launch Application') {
+            steps {
+                script {
+                    // Install dependencies using pip
+                    echo 'Installaing Python Dependencies...'
+                    bat "${python} main.py"
 
                 }
             }
