@@ -18,8 +18,9 @@ pipeline {
             steps {
                 script {
                     // Python Path
-                    def python = '"C:\\Program Files\\Python313\\python"'
+                    //def python = '"C:\\Program Files\\Python313\\python"'
                     // Valiadting Python Version
+                    // Capture the output of the Python version command
                     def versionOutput = bat(script: "${python} --version", returnStdout: true).trim()
                     def version = versionOutput.replaceAll("Python ", "").trim()
                     echo ">>${version}<<${versionOutput}>>"
