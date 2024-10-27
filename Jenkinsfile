@@ -3,7 +3,7 @@ pipeline {
     environment {
         // Define docker image name and tag
         def python3 = ' C:\\Users\\lalit\\AppData\\Local\\Microsoft\\WindowsApps\\python'
-        python = "C:\\Program Files\\Python313\\python.exe" 
+        python = '"C:\\Program Files\\Python313\\python.exe"' 
     }
 
     stages {
@@ -23,7 +23,7 @@ pipeline {
                     // Capture the output of the Python version command
                     def versionOutput = bat(script: "${python} --version", returnStdout: true).trim()
                     def version = versionOutput.replaceAll("Python ", "").trim()
-                    echo ">>${version}<<${versionOutput}>>"
+                    echo ">>${version}<<>>${versionOutput}>>"
                     // Install dependencies using pip
                     //bat "${python} -m pip install -r requirements.txt"
                 }
