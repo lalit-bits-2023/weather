@@ -18,7 +18,7 @@ pipeline {
                 script {
                     echo 'Installing Dependencies...'
                     // Install dependencies using pip
-                    def python = 'C:\\Users\\lalit\\AppData\\Local\\Microsoft\\WindowsApps\\python'
+                    def python = 'C:\\Program Files\\Python313\\python'
                     bat "${python} -v"
                 }
             }
