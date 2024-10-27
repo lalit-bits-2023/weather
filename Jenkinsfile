@@ -17,6 +17,7 @@ pipeline {
             steps {
                 script {
                     // Validating Python Version
+                    echo "Validating Python Version..."
                     def version = bat(script: "${python} --version", returnStdout: true)
 
                     version = version.split()[-1]
@@ -29,5 +30,14 @@ pipeline {
                 }
             }
         }
-    }
+        Stage('Dependency') {
+            steps {
+                script {
+                    // Install dependencies using pip
+                    echo 'Installaing Python Dependencies...'
+                    bat "${python} -m pip install -r requirements.txt"
+
+                }
+            }
+        }
 }
