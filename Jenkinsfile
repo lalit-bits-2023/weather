@@ -19,7 +19,7 @@ pipeline {
                     echo 'Installing Dependencies...'
                     // Install dependencies using pip
                     def python = 'C:\\Users\\lalit\\AppData\\Local\\Microsoft\\WindowsApps\\python'
-                    bat '${python} -m pip install -r requirements.txt'
+                    bat "${python} -m pip install -r requirements.txt"
                 }
             }
         }
