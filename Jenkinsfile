@@ -19,7 +19,7 @@ pipeline {
                     // Python Path
                     def python = '"C:\\Program Files\\Python313\\python"'
                     // Valiadting Python Version
-                    def version = bat "${python} --version"
+                    def version = bat(script: "${python} --version", returnStdout: true).trim()
                     echo "Installing Dependencies... ${version}"
                     // Install dependencies using pip
                     //bat "${python} -m pip install -r requirements.txt"
