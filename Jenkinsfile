@@ -16,8 +16,8 @@ pipeline {
         stage('Check Python Version') {
             steps {
                 script {
-                    // Validating Python Version
-                    echo "Validating Python Version..."
+                    // Checking python version
+                    echo "Checking Python Version..."
                     def version = bat(script: "${python} --version", returnStdout: true)
 
                     version = version.split()[-1]
@@ -36,18 +36,27 @@ pipeline {
                     // Install dependencies using pip
                     echo 'Installaing Python Dependencies...'
                     bat "${python} -m pip install -r requirements.txt"
-
                 }
             }
         }
         stage('Launch Application') {
             steps {
                 script {
-                    // Install dependencies using pip
-                    echo 'Installaing Python Dependencies...'
-                    //bat "${python} .\\main.py"
-                    //bat(script: "${python} .\\main.py", returnStatus: true)
+                    // Launch GUI application
+                    echo 'Launching Application...'
+                    //Use 'start' to run the Python application in a non-blocking way
                     bat(script: "start ${python} main.py", returnStatus: true)
+                    // Use 'start /B' to run the Python application in the background
+                    //bat(script: "start /B ${python} main.py", returnStatus: true)
+                }
+            }
+        }
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                    // Run Unit Testcases
+                    echo 'Running Unit Testcases...'
+                    bat 'python -m unittest discover -s test -p test_main.py'
                 }
             }
         }
