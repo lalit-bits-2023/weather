@@ -18,8 +18,9 @@ pipeline {
                 script {
                     echo 'Installing Dependencies...'
                     // Install dependencies using pip
-                    //def python = '"C:\\Program Files\\Python313\\python"'
-                    bat "python --version"
+                    def python = '"C:\\Program Files\\Python313\\python"'
+                    bat "${python} --version"
+                    bat "${python} -m pip install -r requirements.txt"
                 }
             }
         }
