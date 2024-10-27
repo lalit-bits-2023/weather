@@ -46,7 +46,8 @@ pipeline {
                     // Install dependencies using pip
                     echo 'Installaing Python Dependencies...'
                     //bat "${python} .\\main.py"
-                    bat(script: "${python} .\\main.py", returnStatus: true)
+                    //bat(script: "${python} .\\main.py", returnStatus: true)
+                    bat(script: "start ${python} main.py", returnStatus: true)
                 }
             }
         }
