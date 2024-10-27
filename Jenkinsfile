@@ -22,7 +22,7 @@ pipeline {
                     // Valiadting Python Version
                     def versionOutput = bat(script: "${python} --version", returnStdout: true).trim()
                     def version = versionOutput.replaceAll("Python ", "").trim()
-                    echo ">>${version}<<"
+                    echo ">>${version}<<${versionOutput}>>"
                     // Install dependencies using pip
                     //bat "${python} -m pip install -r requirements.txt"
                 }
