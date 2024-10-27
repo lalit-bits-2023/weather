@@ -2,29 +2,27 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone') {
+        stage('Clone Repository') {
             steps {
                 echo 'clone....'
-                git branch: 'main', url: 'https://github.com/lalit-bits-2023/notepad.git'
+                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
         }
-        stage('Build') {
-            steps {
-                echo 'Building...'
-                // Your build steps here
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-                // Your test steps here
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
-                // Your deploy steps here
-            }
-        }
+
     }
+
+    #post {
+    #    failure {
+    #        script {
+    #            // Email notification on failure
+    #            mail to: '2022MT93720@wilp.bits-pilani.ac.in',
+    #                 subject: "Jenkins Job Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+    #                 body: "Build #${env.BUILD_NUMBER} of Jenkins job '${env.JOB_NAME}' has failed.\nCheck console output at ${env.BUILD_URL} for details."
+    #        }
+    #    }
+    #    always {
+    #        cleanWs() // Clean up workspace
+    #    }
+    #}
+    
 }
