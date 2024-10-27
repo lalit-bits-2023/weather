@@ -45,7 +45,7 @@ pipeline {
                     // Launch GUI application
                     echo 'Launching Application...'
                     //Use 'start' to run the Python application in a non-blocking way
-                    bat(script: "start ${python} main.py", returnStatus: true)
+                    bat(script: "start ${python} app\\main.py", returnStatus: true)
                     // Use 'start /B' to run the Python application in the background
                     //bat(script: "start /B ${python} main.py", returnStatus: true)
                 }
