@@ -30,7 +30,7 @@ pipeline {
                 }
             }
         }
-        Stage('Dependency') {
+        stage('Dependency') {
             steps {
                 script {
                     // Install dependencies using pip
