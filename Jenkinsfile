@@ -18,11 +18,12 @@ pipeline {
             steps {
                 script {
                     // Python Path
-                    // Capture the Python version output
+                    def python = '"C:\\Program Files\\Python313\\python"'
+                    // Valiadting Python Version
                     def versionOutput = bat(script: "${python} --version", returnStdout: true).trim()
-                    // Extract only the version number using regex
                     def version = versionOutput.replaceAll("Python ", "").trim()
-                    echo "Python version: ${version}"
+                    echo ">${version}<"
+                    // Install dependencies using pip
                     //bat "${python} -m pip install -r requirements.txt"
                 }
             }
