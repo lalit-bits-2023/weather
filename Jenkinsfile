@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         // Define docker image name and tag
-        //def python = ' C:\\Users\\lalit\\AppData\\Local\\Microsoft\\WindowsApps\\python'
+        def python3 = ' C:\\Users\\lalit\\AppData\\Local\\Microsoft\\WindowsApps\\python'
     }
 
     stages {
