@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     // Run Unit Testcases
-                    echo 'Running Unit Testcases...
+                    echo 'Running Unit Testcases...'
                     dir('test') {
                         bat 'python -m unittest .\test_weather.py'
                     }
