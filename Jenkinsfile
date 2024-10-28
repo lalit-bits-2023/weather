@@ -106,9 +106,9 @@ pipeline {
                     sleep(time: 2, unit: 'SECONDS') // Sleep for 2 minute
 
                     // Remove the docker image from the local environment after pushing
-                    echo "Removing Docker Image"
-                    bat "docker rmi ${imageName}:v${imageTag}"
-                    echo "Docker Image removed successfully."
+                    //echo "Removing Docker Image"
+                    //bat "docker rmi ${imageName}:v${imageTag}"
+                    //echo "Docker Image removed successfully."
                 }
             }
         }
