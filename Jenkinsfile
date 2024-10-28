@@ -66,7 +66,7 @@ pipeline {
                 }
             }
         }
-        stage('Create Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     imageTag = 1
@@ -91,12 +91,14 @@ pipeline {
                     }
 
                     sleep(time: 2, unit: 'SECONDS') // Sleep for 2 seconds
+
                     // Build the docker image from the dockerfile present in the current workspace
                     echo "Building Docker Image ${imageName}:v${imageTag}"
                     dockerImage = docker.build("${imageName}:v${imageTag}")
                     echo "Docker Image ${imageName}:${imageTag} built successfully."
 
                     sleep(time: 2, unit: 'SECONDS') // Sleep for 2 seconds
+
                     // Push the docker to DockerHub
                     echo "Pushing Docker Image on DockerHub"
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
@@ -109,10 +111,16 @@ pipeline {
                     //echo "Removing Docker Image"
                     //bat "docker rmi ${imageName}:v${imageTag}"
                     //echo "Docker Image removed successfully."
-                    
                 }
             }
         }
-
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Run Docker container
+                    bat "docker run --name WeatherAppv${imageTag} -d ${imageName}:v${imageTag}"
+                }
+            }
+        }
     }
 }
