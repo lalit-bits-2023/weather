@@ -12,7 +12,7 @@ RUN pip3 install requests
 ENV DISPLAY=host.docker.internal:0
 
 # Create an application directory
-WORKDIR /app/app
+WORKDIR /app
 
 # Set PYTHONPATH to include /app directory
 ENV PYTHONPATH=/app
