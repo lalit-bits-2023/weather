@@ -55,8 +55,10 @@ pipeline {
             steps {
                 script {
                     // Run Unit Testcases
-                    echo 'Running Unit Testcases...'
-                    bat 'python -m unittest discover -s test -p test_main.py'
+                    echo 'Running Unit Testcases...
+                    dir('test') {
+                        bat 'python -m unittest .\test_weather.py'
+                    }
                 }
             }
         }
