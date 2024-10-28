@@ -57,9 +57,9 @@ pipeline {
                 script {
                     // Run Unit Testcases
                     echo 'Running Unit Testcases...'
-                    dir('test') {
-                        bat "${python} -m unittest test.test_main"
-                    }
+                    //dir('test') {
+                    bat "${python} -m unittest test.test_main"
+                    //}
                 }
             }
         }
