@@ -118,7 +118,16 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
-                    bat "docker run --name WeatherAppv${imageTag} -d ${imageName}:v${imageTag}"
+                    bat "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}"
+                }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Stop and remove container after the job completes
+                    bat "docker stop WeatherApp.V${imageTag}"
+                    bat "docker rm WeatherApp.V${imageTag}"
                 }
             }
         }
