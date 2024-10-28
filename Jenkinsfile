@@ -119,10 +119,11 @@ pipeline {
                 script {
                     // Run Docker container
                     bat "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}"
+                    sleep(time: 30, unit: 'SECONDS') // Sleep for 2 minute
                 }
             }
         }
-        stage('Cleanup') {
+        stage('Stop Docker Conatiner') {
             steps {
                 script {
                     // Stop and remove container after the job completes
