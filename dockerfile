@@ -21,4 +21,4 @@ ENV PYTHONPATH=/app
 COPY . .
 
 # Run the Tkinter app
-CMD ["python", "./main.py"]
+CMD ["python", "./app/main.py"]
