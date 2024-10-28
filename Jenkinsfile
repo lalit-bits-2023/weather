@@ -57,7 +57,7 @@ pipeline {
                     // Run Unit Testcases
                     echo 'Running Unit Testcases...'
                     dir('test') {
-                        bat 'python -m unittest .\test_weather.py'
+                        bat 'python -m unittest .\\test_weather.py'
                     }
                 }
             }
