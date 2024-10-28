@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../app')))
+
 import unittest
 from unittest.mock import patch, MagicMock
 from app.weather import get_weather
