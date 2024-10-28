@@ -4,7 +4,7 @@ pipeline {
         // Python Binary Path
         python = '"C:\\Program Files\\Python313\\python.exe"'
         PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
-        def imageName = 'lalitbits2023/notepad'
+        def imageName = 'lalitbits2023/weather'
     }
 
     stages {
@@ -69,7 +69,7 @@ pipeline {
         stage('Check Docker Image Version') {
             steps {
                 script {
-                    imageTag = 2
+                    imageTag = 1
                     while (true) {
                         def response = bat (
                             script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/v${imageTag}",
