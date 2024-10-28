@@ -2,7 +2,8 @@ pipeline {
     agent any
     environment {
         // Python Binary Path
-        python = '"C:\\Program Files\\Python313\\python.exe"' 
+        python = '"C:\\Program Files\\Python313\\python.exe"'
+        PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
     }
 
     stages {
