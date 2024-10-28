@@ -34,8 +34,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install dependencies using pip
-                    echo 'Installaing Python Dependencies...'
+                    // Install project dependencies using pip
+                    echo 'Installaing Dependencies...'
                     bat "${python} -m pip install -r requirements.txt"
                 }
             }
@@ -43,7 +43,7 @@ pipeline {
         stage('Launch Application') {
             steps {
                 script {
-                    // Launch GUI application
+                    // Launch GUI (Tkinter) application
                     echo 'Launching Application...'
                     //Use 'start' to run the Python application in a non-blocking way
                     bat(script: "start ${python} app\\main.py", returnStatus: true)
@@ -56,10 +56,12 @@ pipeline {
             steps {
                 script {
                     // Run Unit Testcases
-                    echo 'Running Unit Testcases...'
-                    //dir('test') {
+                    echo 'Running Unit Testcases for main.py'
                     bat "${python} -m unittest test.test_main"
-                    //}
+                    echo 'Running Unit Testcases for ui.py'
+                    bat "${python} -m unittest test.test_ui"
+                    echo 'Running Unit Testcases for weather.py'
+                    bat "${python} -m unittest test.test_weather"
                 }
             }
         }
