@@ -90,6 +90,11 @@ pipeline {
                         }
                     }
                     sleep(time: 2, unit: 'SECONDS') // Sleep for 2 minute
+                    // Build the docker image from the dockerfile present in the current workspace
+                    echo "Building Docker Image ${imageName}:v${imageTag}"
+                    dockerImage = docker.build("${imageName}:v${imageTag}")
+                    echo "Docker Image ${imageName}:${imageTag} built successfully."
+                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 minute
                 }
             }
         }
