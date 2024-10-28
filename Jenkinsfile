@@ -109,6 +109,7 @@ pipeline {
                     //echo "Removing Docker Image"
                     //bat "docker rmi ${imageName}:v${imageTag}"
                     //echo "Docker Image removed successfully."
+                    
                 }
             }
         }
