@@ -83,20 +83,20 @@ pipeline {
                             imageTag += 1
                         } else if (response == "404") {
                             echo "Image version ${imageName}:v${imageTag} does not exist on Docker Hub."
-                            echo "Next Image version should be ${imageName}:v${imageTag}."
+                            echo "Next Image version should be ${imageName}:v${imageTag}"
                             break
                         } else {
                             echo "Error checking image version. HTTP Status: ${response}"
                         }
                     }
 
-                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 minute
+                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 seconds
                     // Build the docker image from the dockerfile present in the current workspace
                     echo "Building Docker Image ${imageName}:v${imageTag}"
                     dockerImage = docker.build("${imageName}:v${imageTag}")
                     echo "Docker Image ${imageName}:${imageTag} built successfully."
 
-                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 minute
+                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 seconds
                     // Push the docker to DockerHub
                     echo "Pushing Docker Image on DockerHub"
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
@@ -104,6 +104,11 @@ pipeline {
                     }
                     echo "Docker Images pushed successfully."
                     sleep(time: 2, unit: 'SECONDS') // Sleep for 2 minute
+
+                    // Remove the docker image from the local environment after pushing
+                    echo "Removing Docker Image"
+                    bat "docker rmi ${imageName}:v${imageTag}"
+                    echo "Docker Image removed successfully."
                 }
             }
         }
