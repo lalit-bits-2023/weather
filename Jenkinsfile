@@ -144,7 +144,7 @@ pipeline {
                     stage ('unit') {
                         bat "${python} -m unittest test.test_main"
                     }
-                    stage ('integration')
+                    stage ('integration') {
                         bat "${python} -m unittest test.test_main"
                     }
                     // Run Unit Testcases
