@@ -7,8 +7,6 @@ from requests.exceptions import RequestException
 #from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 def get_weather(city):  
-    #current_weather_url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-    #forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric"
     current_weather_url= f"{API_URL_WEATHER}?q={city}&appid={API_KEY}&units=metric"
     forecast_url = f"{API_URL_FORECAST}?q={city}&appid={API_KEY}&units=metric"
 
