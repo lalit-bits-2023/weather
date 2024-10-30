@@ -132,5 +132,14 @@ pipeline {
                 }
             }
         }
+        stage('Run Integration Tests') {
+            steps {
+                script {
+                    // Run Unit Testcases
+                    echo 'Running Unit Testcases for main.py'
+                    bat "${python} -m unittest test.test_integration"
+                }
+            }
+        }
     }
 }
