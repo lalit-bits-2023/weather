@@ -49,7 +49,7 @@ pipeline {
                     //Use 'start' to run the Python application in a non-blocking way
                     //def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
                     //bat(script: "start ${python} app\\main.py", returnStatus: true)
-                    det status = 0
+                    def status = 0
                     bat "start ${python} app\\main.py"
                     if (status != 0) {
                         echo ("Failed to start weather application")
