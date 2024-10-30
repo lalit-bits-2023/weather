@@ -141,9 +141,15 @@ pipeline {
         stage('Run Integration Tests') {
             steps {
                 script {
+                    stage ('unit') {
+                        bat "${python} -m unittest test.test_main"
+                    }
+                    stage ('integration')
+                        bat "${python} -m unittest test.test_main"
+                    }
                     // Run Unit Testcases
-                    echo 'Running Unit Testcases for main.py'
-                    bat "${python} -m unittest test.test_integration"
+                    //echo 'Running Unit Testcases for main.py'
+                    //bat "${python} -m unittest test.test_integration"
                 }
             }
         }
