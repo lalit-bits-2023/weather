@@ -3,9 +3,6 @@ import requests
 from app.config import API_KEY, API_URL_WEATHER, API_URL_FORECAST
 from requests.exceptions import RequestException
 
-#import matplotlib.pyplot as plt
-#from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 def get_weather(city):  
     current_weather_url= f"{API_URL_WEATHER}?q={city}&appid={API_KEY}&units=metric"
     forecast_url = f"{API_URL_FORECAST}?q={city}&appid={API_KEY}&units=metric"
