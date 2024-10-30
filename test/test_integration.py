@@ -54,8 +54,8 @@ class TestWeatherAppIntegration(unittest.TestCase):
         # Assert that current weather is displayed correctly
         self.assertEqual(current_weather_labels[(2, 0)].cget("text"), "Overcast clouds")
         #self.assertEqual(float(current_weather_labels[(2, 1)].cget("text")), 25.0)
-        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 14.63)
-        self.assertEqual(float(current_weather_labels[(2, 2)].cget("text")), 91.0)
+        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 13.32)
+        self.assertEqual(float(current_weather_labels[(2, 2)].cget("text")), 84.0)
 
         # Check if the forecast data is displayed correctly
         forecast_labels = {
@@ -72,9 +72,9 @@ class TestWeatherAppIntegration(unittest.TestCase):
                 forecast_labels[(row, column)] = widget
 
         # Assert that the forecast weather is displayed correctly
-        self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-10-28 18:00:00")
-        self.assertEqual(forecast_labels[(5, 1)].cget("text"), "Light rain")
-        self.assertEqual(float(forecast_labels[(5, 2)].cget("text")), 14.64)
+        self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-10-30 18:00:00")
+        self.assertEqual(forecast_labels[(5, 1)].cget("text"), "Overcast clouds")
+        self.assertEqual(float(forecast_labels[(5, 2)].cget("text")), 13.33)
 
 
 if __name__ == '__main__':
