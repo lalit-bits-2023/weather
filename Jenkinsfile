@@ -174,14 +174,14 @@ pipeline {
                 }
             }
         }
-        stage('Stop Docker Conatiner') {
-            steps {
-                script {
+        //stage('Stop Docker Conatiner') {
+            //steps {
+                //script {
                     // Stop and remove container after the job completes
                     //bat "docker stop WeatherApp.V${imageTag}"
                     //bat "docker rm WeatherApp.V${imageTag}"
-                }
-            }
-        }
+                //}
+            //}
+        //}
     }
 }
