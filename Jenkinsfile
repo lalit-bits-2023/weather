@@ -75,11 +75,14 @@ pipeline {
                         setlocal enabledelayedexpansion
                         for %%f in (unittest*) do (
                             echo Running unit test: %%f
-                            def status ${python} -m unittest %%f
-                            if (status != 0) {
-                                error Unit testcase %%f failed
-                            }
+                            ${python} -m unittest %%f
+                            set status=!errorlevel! // Capture the exit status
+                            if !status! neq 0 (
+                                echo Unit testcase %%f failed with status !status!
+                                exit /b !status! // Exit the batch script with the error code
+                            )
                         )
+                        endlocal
                     """
                     // Run Unit Testcases
                     //echo 'Running Unit Testcases for main.py'
