@@ -13,7 +13,7 @@ pipeline {
             steps {
                 // Cloning GIT Repository
                 echo 'Cloning Repository...'
-                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.gitt'
+                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
         }
         stage('Validate Python') {
@@ -28,7 +28,7 @@ pipeline {
                     if (version == "${pversion}") {
                         echo "Python Version : ${version} is valid."
                     } else {
-                        echo "Python Version : ${version} is not valid."
+                        error "Python Version : ${version} is not valid."
                     }
                 }
             }
