@@ -3,7 +3,7 @@ pipeline {
     environment {
         // Python Binary Path
         python = '"C:\\Program Files\\Python313\\python.exe"'
-        pversion = '3.13.0'
+        python_version = '3.13.0'
         //PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
         def imageName = 'lalitbits2023/weather'
     }
@@ -25,10 +25,10 @@ pipeline {
                     def version = bat(script: "${python} --version", returnStdout: true)
                     version = version.split()[-1]
 
-                    if (version == "${pversion}") {
-                        echo "Python Version : ${version} is valid."
+                    if (version == "${python_version}") {
+                        echo "Python Version : ${version} is correct."
                     } else {
-                        error "Python Version : ${version} is not valid."
+                        error "Python Version : ${version} is not correct."
                     }
                 }
             }
@@ -46,7 +46,6 @@ pipeline {
                     } else {
                         error "Failed to install dependencies."
                     }
-                    //bat "${python} -m pip install -r requirements.txt"
                 }
             }
         }
@@ -62,7 +61,7 @@ pipeline {
                         echo ("Weather application launched successfully.")
                     }
                     else{
-                        echo ("Failed to start weather application")
+                        echo ("Failed to launch weather application")
                     }
                 }
             }
