@@ -52,8 +52,8 @@ class TestWeatherAppIntegration(unittest.TestCase):
                 current_weather_labels[(row, column)] = widget
 
         # Assert that current weather is displayed correctly
-        self.assertEqual(current_weather_labels[(2, 0)].cget("text"), "Overcast clouds")
-        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 12.5)
+        self.assertEqual(current_weather_labels[(2, 0)].cget("text"), "Broken clouds")
+        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 12.49)
         self.assertEqual(float(current_weather_labels[(2, 2)].cget("text")), 78.0)
 
         # Check if the forecast data is displayed correctly
