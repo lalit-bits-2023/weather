@@ -49,7 +49,7 @@ pipeline {
                     echo 'Launching Weather Application (background process)...'
 
                     def status = bat(script: "start ${python} app\\main.py", returnStdout: true)
-                    echo "${status}"
+                    echo ">${status}<"
                     if (status != 0) {
                         echo ("Failed to start weather application")
                     }
