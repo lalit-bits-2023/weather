@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        // Python Binary Path
+        // Global Variables
         python = '"C:\\Program Files\\Python313\\python.exe"'
         python_version = '3.13.0' 
         unitTestcaseList = "unittestcase.txt"
@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // Cloning GIT Repository
+                // Clone GIT repository
                 echo 'Cloning Repository...'
                 git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
@@ -20,7 +20,7 @@ pipeline {
         stage('Check Python Version') {
             steps {
                 script {
-                    // Checking python version
+                    // Check python version 
                     echo "Checking Python Version..."
 
                     def version = bat(script: "${python} --version", returnStdout: true)
@@ -53,10 +53,10 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 script {
-                    // Running Unit Testcases
+                    // Run unit testcase
                     echo 'Runing Unit Testcases)...'
 
-                    // Reading Unit Testcase File
+                    // Reading unit testcase file
                     def testCases = readFile(unitTestcaseList).trim().split('\n')
 
                     for (testCase in testCases) {
@@ -72,10 +72,10 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 script {
-                    // Running Integration Testcases
+                    // Run integration testcase
                     echo 'Runing Integration Testcases)...'
 
-                    // Reading Integration Testcase File
+                    // Reading integration testcase File
                     def testCases = readFile(integrationTestcaseList).trim().split('\n')
 
                     for (testCase in testCases) {
@@ -91,11 +91,12 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 script {
+                    // Check docker deamon and find next docker image 
                     echo "Prepare Build Environment."
 
                     // Run a Docker command and capture the exit status
                     def status = bat(script: "docker --version", returnStatus: true)
-                    
+
                     // Check if the Docker daemon is running
                     if (status == 0) {
                         echo "Docker daemon is up and running."
@@ -103,8 +104,8 @@ pipeline {
                         error "Docker daemon is not running. Please start Docker and try again."
                     }
 
+                    // Check docker image on Docker Hub
                     imageTag = 1
-
                     while (true) {
                         def response = bat (
                             script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/v${imageTag}",
@@ -114,11 +115,10 @@ pipeline {
                         response = response.split()[-1]
 
                         if (response == "200") {
-                            echo "Image version ${imageName}:v${imageTag} exists on Docker Hub."
+                            echo "Image '${imageName}:v${imageTag}' exists on Docker Hub."
                             imageTag += 1
                         } else if (response == "404") {
-                            echo "Image version ${imageName}:v${imageTag} does not exist on Docker Hub."
-                            echo "Next Image version '${imageName}:v${imageTag}'"
+                            echo "Next Image '${imageName}:v${imageTag}'"
                             break
                         } else {
                             error "Error checking image version. HTTP Status: ${response}"
@@ -130,13 +130,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the docker image from the dockerfile present in the current workspace
-                    echo "Building Docker Image ${imageName}:v${imageTag}"
+                    // Build the docker image 
+                    echo "Building Docker Image '${imageName}:v${imageTag}'"
                     dockerImage = docker.build("${imageName}:v${imageTag}")
                     if (dockerImage == null) {
                         error("Docker image '${imageName}:v${imageTag}' creation failed.")
                     } else {
-                        echo "Docker Image '${imageName}:${imageTag}' created successfully."\
+                        echo "Docker image '${imageName}:${imageTag}' created successfully."\
                     }
                 }
             }
@@ -144,12 +144,21 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the docker to DockerHub
-                    echo "Pushing Docker Image on DockerHub"
+                    // Push the docker image to DockerHub
+                    echo "Pushing Docker Image '${imageName}:${imageTag}' on DockerHub"
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
                         dockerImage.push()
                     }
-                    echo "Docker Images pushed successfully."
+                    def response = bat (
+                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/v${imageTag}",
+                            returnStdout: true
+                    ).trim()
+                    response = response.split()[-1]
+                    if (response == "200") {
+                        echo "Docker Images '${imageName}:${imageTag}' pushed successfully."
+                    } else {
+                        error "Failed to push docker image '${imageName}:${imageTag}' on DockerHeb."
+                    }
                 }
             }
         }
