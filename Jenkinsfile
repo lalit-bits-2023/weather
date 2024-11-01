@@ -6,7 +6,6 @@ pipeline {
         python_version = '3.13.0' 
         unitTestcaseList = "unittestcase.txt"
         integrationTestcaseList = "integrationtestcase.txt" 
-        //PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
         def imageName = 'lalitbits2023/weather'
     }
 
@@ -18,11 +17,11 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
         }
-        stage('Validate Python') {
+        stage('Check Python Version') {
             steps {
                 script {
                     // Checking python version
-                    echo "Valiadting Python Version..."
+                    echo "Checking Python Version..."
 
                     def version = bat(script: "${python} --version", returnStdout: true)
                     version = version.split()[-1]
@@ -47,22 +46,6 @@ pipeline {
                         echo "Dependencies installed successfully."
                     } else {
                         error "Failed to install dependencies."
-                    }
-                }
-            }
-        }
-        stage('Launch Application') {
-            steps {
-                script {
-                    // Launch GUI (Tkinter) application
-                    echo 'Launching Weather Application (background process)...'
-
-                    def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
-
-                    if (status == 0) {
-                        echo ("Weather Application launched successfully.")
-                    } else{
-                        echo ("Failed to launch Weather Application.")
                     }
                 }
             }
@@ -105,10 +88,21 @@ pipeline {
                 }
             }
         }
-        stage('Build Testing Environment') {
+        stage('Prepare Environment') {
             steps {
                 script {
+                    // Run a Docker command and capture the exit status
+                    def status = bat(script: "docker info", returnStatus: true)
+                    
+                    // Check if the Docker daemon is running
+                    if (status == 0) {
+                        echo "Docker daemon is up and running."
+                    } else {
+                        error "Docker daemon is not running. Please start Docker and try again."
+                    }
+
                     imageTag = 1
+
                     while (true) {
                         def response = bat (
                             script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/v${imageTag}",
@@ -122,34 +116,39 @@ pipeline {
                             imageTag += 1
                         } else if (response == "404") {
                             echo "Image version ${imageName}:v${imageTag} does not exist on Docker Hub."
-                            echo "Next Image version should be ${imageName}:v${imageTag}"
+                            echo "Next Image version '${imageName}:v${imageTag}'"
                             break
                         } else {
-                            echo "Error checking image version. HTTP Status: ${response}"
+                            error "Error checking image version. HTTP Status: ${response}"
                         }
                     }
-
-                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 seconds
-
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
                     // Build the docker image from the dockerfile present in the current workspace
                     echo "Building Docker Image ${imageName}:v${imageTag}"
                     dockerImage = docker.build("${imageName}:v${imageTag}")
-                    echo "Docker Image ${imageName}:${imageTag} built successfully."
-
-                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 seconds
-
+                    if (dockerImage == null) {
+                        error("Docker image '${imageName}:v${imageTag}' creation failed.")
+                    } else {
+                        echo "Docker Image '${imageName}:${imageTag}' created successfully."\
+                    }
+                    
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
                     // Push the docker to DockerHub
                     echo "Pushing Docker Image on DockerHub"
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
                         dockerImage.push()
                     }
                     echo "Docker Images pushed successfully."
-                    sleep(time: 2, unit: 'SECONDS') // Sleep for 2 minute
-
-                    // Remove the docker image from the local environment after pushing
-                    //echo "Removing Docker Image"
-                    //bat "docker rmi ${imageName}:v${imageTag}"
-                    //echo "Docker Image removed successfully."
                 }
             }
         }
