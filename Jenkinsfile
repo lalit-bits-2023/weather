@@ -41,7 +41,7 @@ pipeline {
 
                     def status = bat(script: "${python} -m pip install -r requirements.txt", returnStatus: true)
 
-                    if (version == "${pversion}") {
+                    if (status == 0) {
                         echo "Dependencies installed successfully."
                     } else {
                         error "Failed to install dependencies."
