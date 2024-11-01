@@ -3,7 +3,7 @@ pipeline {
     environment {
         // Python Binary Path
         python = '"C:\\Program Files\\Python313\\python.exe"'
-        pversion = '3.13.'
+        pversion = '3.13.0'
         //PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
         def imageName = 'lalitbits2023/weather'
     }
