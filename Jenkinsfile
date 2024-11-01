@@ -5,6 +5,7 @@ pipeline {
         python = '"C:\\Program Files\\Python313\\python.exe"'
         python_version = '3.13.0' 
         unitTestcaseList = "unittestcase.txt"
+        integrationTestcaseList = "integrationtestcase.txt" 
         //PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
         def imageName = 'lalitbits2023/weather'
     }
@@ -76,7 +77,7 @@ pipeline {
                     def testCases = readFile(unitTestcaseList).trim().split('\n')
 
                     for (testCase in testCases) {
-                        echo "Running ${testCase}"
+                        echo "Running Unit Testcase : ${testCase}"
                         def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
                         if (status != 0) { 
                             error "Unit testcases '${testcase}' failed."
@@ -88,15 +89,19 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 script {
-                    stage ('unit') {
-                        bat "${python} -m unittest test.test_main"
+                    // Running Integration Testcases
+                    echo 'Runing Integration Testcases)...'
+
+                    // Reading Integration Testcase File
+                    def testCases = readFile(integrationTestcaseList).trim().split('\n')
+
+                    for (testCase in testCases) {
+                        echo "Running Integration Testcase : ${testCase}"
+                        def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
+                        if (status != 0) { 
+                            error "Interation testcases '${testcase}' failed."
+                        }
                     }
-                    stage ('integration') {
-                        bat "${python} -m unittest test.test_main"
-                    }
-                    // Run Unit Testcases
-                    //echo 'Running Unit Testcases for main.py'
-                    //bat "${python} -m unittest test.test_integration"
                 }
             }
         }
