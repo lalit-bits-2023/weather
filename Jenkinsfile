@@ -60,8 +60,7 @@ pipeline {
 
                     if (status == 0) {
                         echo ("Weather application launched successfully.")
-                    }
-                    else{
+                    } else{
                         echo ("Failed to launch weather application")
                     }
                 }
@@ -71,9 +70,12 @@ pipeline {
             steps {
                 script {
                     // Reading Unit Testcase File
-                    testCases = readFile(unitTestcaseList).trim().split('\n')
+                    def testCases = readFile(unitTestcaseList).trim().split('\n')
                     for (testCase in testCases) {
-                        echo testCase
+                        def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
+                        if ($status != 0) { 
+                            error "Unit testcases '${testcase}' failed."
+                        }
                     }
                 }
             }
