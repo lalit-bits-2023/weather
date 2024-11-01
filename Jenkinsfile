@@ -3,7 +3,8 @@ pipeline {
     environment {
         // Python Binary Path
         python = '"C:\\Program Files\\Python313\\python.exe"'
-        python_version = '3.13.0'
+        python_version = '3.13.0' 
+        unitTestcaseList = "unittestcase.txt"
         //PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
         def imageName = 'lalitbits2023/weather'
     }
@@ -69,25 +70,11 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 script {
-                    def unitTestcase = []
-                    bat """
-                        cd /d test
-                        setlocal enabledelayedexpansion
-                        for %%f in (unittest*) do (
-                            echo Running unit test: %%f
-                            ${python} -m unittest %%f
-                            set status=!errorlevel! // Capture the exit status
-                            echo status:!status!
-                        )
-                        endlocal
-                    """
-                    // Run Unit Testcases
-                    //echo 'Running Unit Testcases for main.py'
-                    //bat "${python} -m unittest test.test_main"
-                    //echo 'Running Unit Testcases for ui.py'
-                    //bat "c
-                    //echo 'Running Unit Testcases for weather.py'
-                    //bat "${python} -m unittest test.test_weather"
+                    // Reading Unit Testcase File
+                    testCases = readFile(${unitTestcaseList}).trim().split('\n')
+                    for (testCase in testCases) {
+                        echo testCase
+                    }
                 }
             }
         }
