@@ -24,6 +24,7 @@ pipeline {
 
                     def version = bat(script: "${python} --version", returnStdout: true)
                     version = version.split()[-1]
+                    echo "${pversion}:${version}"
 
                     if (version != "${pversion}") {
                         echo "Python Version : ${version} is valid."
