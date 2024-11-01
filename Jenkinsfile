@@ -59,9 +59,9 @@ pipeline {
                     def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
 
                     if (status == 0) {
-                        echo ("Weather application launched successfully.")
+                        echo ("Weather Application launched successfully.")
                     } else{
-                        echo ("Failed to launch weather application")
+                        echo ("Failed to launch Weather Application.")
                     }
                 }
             }
@@ -69,9 +69,14 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 script {
+                    // Running Unit Testcases
+                    echo 'Runing Unit Testcases)...'
+
                     // Reading Unit Testcase File
                     def testCases = readFile(unitTestcaseList).trim().split('\n')
+
                     for (testCase in testCases) {
+                        echo "Running ${testCase}"
                         def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
                         if (status != 0) { 
                             error "Unit testcases '${testcase}' failed."
