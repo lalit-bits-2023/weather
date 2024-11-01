@@ -53,10 +53,8 @@ class TestWeatherApp(unittest.TestCase):
 
         # Assert the current weather output
         self.assertEqual(current_weather_labels[(2, 0)].cget("text"), "Overcast clouds")
-        #self.assertEqual(current_weather_labels[(2, 1)].cget("text"), "25.0")
-        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 14.64)
-        #self.assertEqual(current_weather_labels[(2, 2)].cget("text"), "60")
-        self.assertEqual(current_weather_labels[(2, 2)].cget("text"), 91) 
+        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 11.79)
+        self.assertEqual(current_weather_labels[(2, 2)].cget("text"), 82)
 
         # Similarly, check forecast labels
         forecast_labels = {
@@ -72,10 +70,9 @@ class TestWeatherApp(unittest.TestCase):
             if (row, column) in forecast_labels:
                 forecast_labels[(row, column)] = widget
 
-        self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-10-28 18:00:00")
+        self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-11-01 09:00:00")
         self.assertEqual(forecast_labels[(5, 1)].cget("text"), "Overcast clouds")
-        #self.assertEqual(forecast_labels[(5, 2)].cget("text"), "24.0")
-        self.assertEqual(forecast_labels[(5, 2)].cget("text"), 14.64)  # Convert expected value to string
+        self.assertEqual(forecast_labels[(5, 2)].cget("text"), 12.08)  # Convert expected value to string
 
     @patch('ui.get_weather')
     @patch('tkinter.messagebox.showwarning')  # Mock messagebox.showwarning

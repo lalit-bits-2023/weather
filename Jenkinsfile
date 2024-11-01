@@ -3,28 +3,29 @@ pipeline {
     environment {
         // Python Binary Path
         python = '"C:\\Program Files\\Python313\\python.exe"'
-        PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
+        pversion = '3.13.0'
+        //PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
         def imageName = 'lalitbits2023/weather'
     }
 
     stages {
-        //stage('Clone Repository') {
-        //    steps {
-        //    // Cloning GIT Repository
-        //        echo 'Cloning Repository...'
-        //        git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
-        //    }
-        //}
-        stage('Check Python Version') {
+        stage('Clone Repository') {
+            steps {
+            // Cloning GIT Repository
+                echo 'Cloning Weather Repository...'
+                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
+            }
+        }
+        stage('Validate Python') {
             steps {
                 script {
                     // Checking python version
-                    echo "Checking Python Version..."
-                    def version = bat(script: "${python} --version", returnStdout: true)
+                    echo "Valiadting Python Version..."
 
+                    def version = bat(script: "${python} --version", returnStdout: true)
                     version = version.split()[-1]
 
-                    if (version == "3.13.0") {
+                    if (version == "${pversion}") {
                         echo "Python Version : ${version} is valid."
                     } else {
                         echo "Python Version : ${version} is not valid."
@@ -45,7 +46,7 @@ pipeline {
             steps {
                 script {
                     // Launch GUI (Tkinter) application
-                    echo 'Launching Application...'
+                    echo 'Launching Application (background process)...'
                     //Use 'start' to run the Python application in a non-blocking way
                     //def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
                     //bat(script: "start ${python} app\\main.py", returnStatus: true)
@@ -62,16 +63,37 @@ pipeline {
                 }
             }
         }
-        stage('Run Unit Tests') {
+        stage('Unit Tests') {
             steps {
                 script {
+                    bat """
+                        setlocal enabledelayedexpansion
+                        for %%f in ("unittest_*") do (
+                            echo Found file: %%f
+                        )
+                    """
                     // Run Unit Testcases
-                    echo 'Running Unit Testcases for main.py'
-                    bat "${python} -m unittest test.test_main"
+                    //echo 'Running Unit Testcases for main.py'
+                    //bat "${python} -m unittest test.test_main"
                     //echo 'Running Unit Testcases for ui.py'
                     //bat "${python} -m unittest test.test_ui"
                     //echo 'Running Unit Testcases for weather.py'
                     //bat "${python} -m unittest test.test_weather"
+                }
+            }
+        }
+        stage('Integration Tests') {
+            steps {
+                script {
+                    stage ('unit') {
+                        bat "${python} -m unittest test.test_main"
+                    }
+                    stage ('integration') {
+                        bat "${python} -m unittest test.test_main"
+                    }
+                    // Run Unit Testcases
+                    //echo 'Running Unit Testcases for main.py'
+                    //bat "${python} -m unittest test.test_integration"
                 }
             }
         }
@@ -138,21 +160,6 @@ pipeline {
                     // Stop and remove container after the job completes
                     bat "docker stop WeatherApp.V${imageTag}"
                     bat "docker rm WeatherApp.V${imageTag}"
-                }
-            }
-        }
-        stage('Run Integration Tests') {
-            steps {
-                script {
-                    stage ('unit') {
-                        bat "${python} -m unittest test.test_main"
-                    }
-                    stage ('integration') {
-                        bat "${python} -m unittest test.test_main"
-                    }
-                    // Run Unit Testcases
-                    //echo 'Running Unit Testcases for main.py'
-                    //bat "${python} -m unittest test.test_integration"
                 }
             }
         }

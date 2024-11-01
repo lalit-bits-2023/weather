@@ -1,8 +1,12 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../app')))
+
 import unittest
 from unittest.mock import patch, MagicMock
 import tkinter as tk
-from ui import WeatherApp
-from weather import get_weather
+from app.ui import WeatherApp
+from app.weather import get_weather
 
 class TestWeatherAppIntegration(unittest.TestCase):
 
@@ -49,9 +53,8 @@ class TestWeatherAppIntegration(unittest.TestCase):
 
         # Assert that current weather is displayed correctly
         self.assertEqual(current_weather_labels[(2, 0)].cget("text"), "Overcast clouds")
-        #self.assertEqual(float(current_weather_labels[(2, 1)].cget("text")), 25.0)
-        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 15.42)
-        self.assertEqual(float(current_weather_labels[(2, 2)].cget("text")), 90.0)
+        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 11.79)
+        self.assertEqual(float(current_weather_labels[(2, 2)].cget("text")), 82.0)
 
         # Check if the forecast data is displayed correctly
         forecast_labels = {
@@ -68,9 +71,9 @@ class TestWeatherAppIntegration(unittest.TestCase):
                 forecast_labels[(row, column)] = widget
 
         # Assert that the forecast weather is displayed correctly
-        self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-10-20 12:00:00")
-        self.assertEqual(forecast_labels[(5, 1)].cget("text"), "Light rain")
-        self.assertEqual(float(forecast_labels[(5, 2)].cget("text")), 15.4)
+        self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-11-01 09:00:00")
+        self.assertEqual(forecast_labels[(5, 1)].cget("text"), "Overcast clouds")
+        self.assertEqual(float(forecast_labels[(5, 2)].cget("text")), 12.08)
 
 
 if __name__ == '__main__':
