@@ -65,7 +65,7 @@ pipeline {
                     bat """
                         cd /d test
                         setlocal enabledelayedexpansion
-                        for %%f in (*) do (
+                        for %%f in (unittest*) do (
                             echo Found file: %%f
                         )
                     """
