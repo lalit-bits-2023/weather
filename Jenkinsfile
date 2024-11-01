@@ -91,8 +91,10 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 script {
+                    echo "Prepare Build Environment."
+
                     // Run a Docker command and capture the exit status
-                    def status = bat(script: "docker info", returnStatus: true)
+                    def status = bat(script: "docker --version", returnStatus: true)
                     
                     // Check if the Docker daemon is running
                     if (status == 0) {
@@ -136,7 +138,6 @@ pipeline {
                     } else {
                         echo "Docker Image '${imageName}:${imageTag}' created successfully."\
                     }
-                    
                 }
             }
         }
