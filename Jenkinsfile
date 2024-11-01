@@ -62,18 +62,20 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 script {
+                    def unitTestcase = []
                     bat """
                         cd /d test
                         setlocal enabledelayedexpansion
                         for %%f in (unittest*) do (
                             echo Found file: %%f
+                            "${python} -m unittest %%f"
                         )
                     """
                     // Run Unit Testcases
                     //echo 'Running Unit Testcases for main.py'
                     //bat "${python} -m unittest test.test_main"
                     //echo 'Running Unit Testcases for ui.py'
-                    //bat "${python} -m unittest test.test_ui"
+                    //bat "c
                     //echo 'Running Unit Testcases for weather.py'
                     //bat "${python} -m unittest test.test_weather"
                 }
