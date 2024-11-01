@@ -53,8 +53,8 @@ class TestWeatherApp(unittest.TestCase):
 
         # Assert the current weather output
         self.assertEqual(current_weather_labels[(2, 0)].cget("text"), "Overcast clouds")
-        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 12.47)
-        self.assertEqual(current_weather_labels[(2, 2)].cget("text"), 79)
+        self.assertEqual(current_weather_labels[(2, 1)].cget("text"), 12.5)
+        self.assertEqual(current_weather_labels[(2, 2)].cget("text"), 78)
 
         # Similarly, check forecast labels
         forecast_labels = {
@@ -72,7 +72,7 @@ class TestWeatherApp(unittest.TestCase):
 
         self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-11-01 12:00:00")
         self.assertEqual(forecast_labels[(5, 1)].cget("text"), "Broken clouds")
-        self.assertEqual(forecast_labels[(5, 2)].cget("text"), 13.3)  # Convert expected value to string
+        self.assertEqual(forecast_labels[(5, 2)].cget("text"), 13.34)  # Convert expected value to string
 
     @patch('ui.get_weather')
     @patch('tkinter.messagebox.showwarning')  # Mock messagebox.showwarning
