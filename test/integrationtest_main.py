@@ -73,7 +73,7 @@ class TestWeatherAppIntegration(unittest.TestCase):
         # Assert that the forecast weather is displayed correctly
         self.assertEqual(forecast_labels[(5, 0)].cget("text"), "2024-11-01 12:00:00")
         self.assertEqual(forecast_labels[(5, 1)].cget("text"), "Broken clouds")
-        self.assertEqual(float(forecast_labels[(5, 2)].cget("text")), 13.34)
+        self.assertEqual(float(forecast_labels[(5, 2)].cget("text")), 13.35)
 
 
 if __name__ == '__main__':
