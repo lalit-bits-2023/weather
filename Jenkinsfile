@@ -3,7 +3,7 @@ pipeline {
     environment {
         // Python Binary Path
         python = '"C:\\Program Files\\Python313\\python.exe"'
-        pversion = '3.13.1'
+        pversion = '3.13.'
         //PYTHONPATH = '"C:\\Users\\lalit\\Desktop\\projects\\weather"'
         def imageName = 'lalitbits2023/weather'
     }
@@ -38,7 +38,15 @@ pipeline {
                 script {
                     // Install project dependencies using pip
                     echo 'Installaing Dependencies...'
-                    bat "${python} -m pip install -r requirements.txt"
+
+                    def status = bat(script: "${python} -m pip install -r requirements.txt", returnStatus: true)
+
+                    if (version == "${pversion}") {
+                        echo "Dependencies installed successfully."
+                    } else {
+                        error "Failed to install dependencies."
+                    }
+                    //bat "${python} -m pip install -r requirements.txt"
                 }
             }
         }
