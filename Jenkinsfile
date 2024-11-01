@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     // Reading Unit Testcase File
-                    testCases = readFile(${unitTestcaseList}).trim().split('\n')
+                    testCases = readFile(unitTestcaseList).trim().split('\n')
                     for (testCase in testCases) {
                         echo testCase
                     }
