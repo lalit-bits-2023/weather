@@ -168,8 +168,9 @@ pipeline {
                 script {
                     // Run Docker container
                     echo "Deploying application..."
+                    bat "docker pull ${imageName}:${imageTag}"
                     bat "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}"
-                    sleep(time: 30, unit: 'SECONDS') // Sleep for 2 minute
+                    //sleep(time: 30, unit: 'SECONDS') // Sleep for 2 minute
                 }
             }
         }
@@ -177,8 +178,8 @@ pipeline {
             steps {
                 script {
                     // Stop and remove container after the job completes
-                    bat "docker stop WeatherApp.V${imageTag}"
-                    bat "docker rm WeatherApp.V${imageTag}"
+                    //bat "docker stop WeatherApp.V${imageTag}"
+                    //bat "docker rm WeatherApp.V${imageTag}"
                 }
             }
         }
