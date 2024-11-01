@@ -48,7 +48,7 @@ pipeline {
                     // Launch GUI (Tkinter) application
                     echo 'Launching Weather Application (background process)...'
 
-                    def status = bat(script: "start ${python} app\\main.py", returnStdout: true)
+                    def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
                     echo ">${status}<"
                     if (status != 0) {
                         echo ("Failed to start weather application")
