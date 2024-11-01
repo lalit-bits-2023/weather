@@ -105,7 +105,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+        stage('Build Testing Environment') {
             steps {
                 script {
                     imageTag = 1
@@ -153,7 +153,7 @@ pipeline {
                 }
             }
         }
-        stage('Run Docker Container') {
+        stage('Deploy Application') {
             steps {
                 script {
                     // Run Docker container
