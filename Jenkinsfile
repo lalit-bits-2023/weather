@@ -73,7 +73,7 @@ pipeline {
                     def testCases = readFile(unitTestcaseList).trim().split('\n')
                     for (testCase in testCases) {
                         def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
-                        if ($status != 0) { 
+                        if (status != 0) { 
                             error "Unit testcases '${testcase}' failed."
                         }
                     }
