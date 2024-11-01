@@ -24,7 +24,6 @@ pipeline {
 
                     def version = bat(script: "${python} --version", returnStdout: true)
                     version = version.split()[-1]
-                    echo "${pversion}:${version}"
 
                     if (version == "${pversion}") {
                         echo "Python Version : ${version} is valid."
@@ -50,7 +49,7 @@ pipeline {
                     echo 'Launching Weather Application (background process)...'
 
                     def status = bat(script: "start ${python} app\\main.py", returnStdout: true)
-
+                    echo "${status}"
                     if (status != 0) {
                         echo ("Failed to start weather application")
                     }
