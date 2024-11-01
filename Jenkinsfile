@@ -11,8 +11,8 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-            // Cloning GIT Repository
-                echo 'Cloning Weather Repository...'
+                // Cloning GIT Repository
+                echo 'Cloning Repository...'
                 git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
         }
@@ -25,7 +25,7 @@ pipeline {
                     def version = bat(script: "${python} --version", returnStdout: true)
                     version = version.split()[-1]
 
-                    if (version == "${pversion}") {
+                    if (version != "${pversion}") {
                         echo "Python Version : ${version} is valid."
                     } else {
                         echo "Python Version : ${version} is not valid."
@@ -46,20 +46,16 @@ pipeline {
             steps {
                 script {
                     // Launch GUI (Tkinter) application
-                    echo 'Launching Application (background process)...'
-                    //Use 'start' to run the Python application in a non-blocking way
-                    //def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
-                    //bat(script: "start ${python} app\\main.py", returnStatus: true)
-                    def status = 0
-                    bat "start ${python} app\\main.py"
+                    echo 'Launching Weather Application (background process)...'
+
+                    def status = bat(script: "start ${python} app\\main.py", returnStdout: true)
+
                     if (status != 0) {
                         echo ("Failed to start weather application")
                     }
                     else{
                         echo ("Weather application launched successfully.")
                     }
-                    // Use 'start /B' to run the Python application in the background
-                    //bat(script: "start /B ${python} main.py", returnStatus: true)
                 }
             }
         }
