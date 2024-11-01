@@ -74,8 +74,11 @@ pipeline {
                         cd /d test
                         setlocal enabledelayedexpansion
                         for %%f in (unittest*) do (
-                            echo Found file: %%f
-                            ${python} -m unittest %%f
+                            echo Running unit test: %%f
+                            def status ${python} -m unittest %%f
+                            if (status != 0) {
+                                error Unit testcase %%f failed
+                            }
                         )
                     """
                     // Run Unit Testcases
