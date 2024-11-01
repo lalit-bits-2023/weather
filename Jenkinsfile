@@ -54,13 +54,13 @@ pipeline {
             steps {
                 script {
                     // Run unit testcase
-                    echo 'Runing Unit Testcases)...'
+                    echo 'Running Unit Testcases...'
 
                     // Reading unit testcase file
                     def testCases = readFile(unitTestcaseList).trim().split('\n')
 
                     for (testCase in testCases) {
-                        echo "Running Unit Testcase : ${testCase}"
+                        echo "Running Testcase : ${testCase}"
                         def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
                         if (status != 0) { 
                             error "Unit testcases '${testcase}' failed."
@@ -73,13 +73,13 @@ pipeline {
             steps {
                 script {
                     // Run integration testcase
-                    echo 'Runing Integration Testcases)...'
+                    echo 'Running Integration Testcases...'
 
                     // Reading integration testcase File
                     def testCases = readFile(integrationTestcaseList).trim().split('\n')
 
                     for (testCase in testCases) {
-                        echo "Running Integration Testcase : ${testCase}"
+                        echo "Running Testcase : ${testCase}"
                         def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
                         if (status != 0) { 
                             error "Interation testcases '${testcase}' failed."
@@ -92,7 +92,7 @@ pipeline {
             steps {
                 script {
                     // Check docker deamon and find next docker image 
-                    echo "Prepare Build Environment."
+                    echo "Preparing Build Environment..."
 
                     // Run a Docker command and capture the exit status
                     def status = bat(script: "docker --version", returnStatus: true)
@@ -131,12 +131,12 @@ pipeline {
             steps {
                 script {
                     // Build the docker image 
-                    echo "Building Docker Image '${imageName}:v${imageTag}'"
+                    echo "Building Docker Image..."
                     dockerImage = docker.build("${imageName}:v${imageTag}")
                     if (dockerImage == null) {
                         error("Docker image '${imageName}:v${imageTag}' creation failed.")
                     } else {
-                        echo "Docker image '${imageName}:${imageTag}' created successfully."\
+                        echo "Docker image '${imageName}:${imageTag}' build successfully."\
                     }
                 }
             }
@@ -145,7 +145,7 @@ pipeline {
             steps {
                 script {
                     // Push the docker image to DockerHub
-                    echo "Pushing Docker Image '${imageName}:${imageTag}' on DockerHub"
+                    echo "Pushing Docker Image..."
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
                         dockerImage.push()
                     }
@@ -155,10 +155,11 @@ pipeline {
                     ).trim()
                     response = response.split()[-1]
                     if (response == "200") {
-                        echo "Docker Images '${imageName}:${imageTag}' pushed successfully."
+                        echo "Docker Images '${imageName}:${imageTag}' pushed successfully on DockerHub."
                     } else {
                         error "Failed to push docker image '${imageName}:${imageTag}' on DockerHeb."
                     }
+                    bat "docker rmi ${imageName}:v${imageTag}"
                 }
             }
         }
@@ -166,6 +167,7 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
+                    echo "Deploying application..."
                     bat "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}"
                     sleep(time: 30, unit: 'SECONDS') // Sleep for 2 minute
                 }
