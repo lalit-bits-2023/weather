@@ -26,7 +26,7 @@ pipeline {
                     version = version.split()[-1]
                     echo "${pversion}:${version}"
 
-                    if (version != "${pversion}") {
+                    if (version == "${pversion}") {
                         echo "Python Version : ${version} is valid."
                     } else {
                         echo "Python Version : ${version} is not valid."
