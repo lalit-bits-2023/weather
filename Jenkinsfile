@@ -13,7 +13,7 @@ pipeline {
             steps {
                 // Cloning GIT Repository
                 echo 'Cloning Repository...'
-                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
+                git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.gitt'
             }
         }
         stage('Validate Python') {
