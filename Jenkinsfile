@@ -68,7 +68,7 @@ pipeline {
                         setlocal enabledelayedexpansion
                         for %%f in (unittest*) do (
                             echo Found file: %%f
-                            "${python} -m unittest %%f"
+                            ${python} -m unittest %%f
                         )
                     """
                     // Run Unit Testcases
