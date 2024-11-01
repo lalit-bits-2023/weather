@@ -168,7 +168,7 @@ pipeline {
                 script {
                     // Run Docker container
                     echo "Deploying application..."
-                    bat "docker pull ${imageName}:${imageTag}"
+                    bat "docker pull ${imageName}:v${imageTag}"
                     bat "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}"
                     //sleep(time: 30, unit: 'SECONDS') // Sleep for 2 minute
                 }
