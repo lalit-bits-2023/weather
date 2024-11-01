@@ -49,12 +49,12 @@ pipeline {
                     echo 'Launching Weather Application (background process)...'
 
                     def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
-                    echo ">${status}<"
-                    if (status != 0) {
-                        echo ("Failed to start weather application")
+
+                    if (status == 0) {
+                        echo ("Weather application launched successfully.")
                     }
                     else{
-                        echo ("Weather application launched successfully.")
+                        echo ("Failed to start weather application")
                     }
                 }
             }
@@ -63,8 +63,9 @@ pipeline {
             steps {
                 script {
                     bat """
+                        cd /d test
                         setlocal enabledelayedexpansion
-                        for %%f in ("unittest_*") do (
+                        for %%f in (*) do (
                             echo Found file: %%f
                         )
                     """
