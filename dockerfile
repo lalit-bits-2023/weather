@@ -24,4 +24,4 @@ ENV PYTHONPATH=/weather
 COPY . .
 
 # Run the Tkinter app
-CMD ["python", "./weather/app/main.py"]
+CMD ["python", "weather/app/main.py"]
