@@ -146,7 +146,7 @@ pipeline {
                 script {
                     // Push the docker image to DockerHub
                     echo "Pushing Docker Image..."
-                    docker.withRegistry('https://index.docker.io/v1/', 'Weather') {
+                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
                         dockerImage.push()
                     }
                     def response = bat (
