@@ -7,6 +7,9 @@ RUN apt-get update && \
 
 # Install Python packages
 # RUN pip3 install requests
+
+COPY requirements.txt ./
+
 RUN pip3 install --no-cache-dir -r ./requirements.txt
 
 # Set environment variable to use the host's display
