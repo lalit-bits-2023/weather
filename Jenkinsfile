@@ -136,7 +136,7 @@ pipeline {
                     if (dockerImage == null) {
                         error("Docker image '${imageName}:v${imageTag}' creation failed.")
                     } else {
-                        echo "Docker image '${imageName}:${imageTag}' build successfully."\
+                        echo "Docker image '${imageName}:v${imageTag}' build successfully."\
                     }
                 }
             }
@@ -166,7 +166,7 @@ pipeline {
         stage('Deploy Application') {
             steps {
                 script {
-                    // Run Docker container
+                    // Pull Docker Image from DockerHub
                     echo "Pulling Docker Image..."
                     def status = bat(script: "docker pull ${imageName}:v${imageTag}", returnStatus: true)
                     if (status == 0) {
@@ -174,10 +174,14 @@ pipeline {
                     } else {
                         error "Failed to pull Docker Image '${imageName}:v${imageTag}'"
                     }
+                    // Run Docker Container
                     echo "Deploying application..."
-                    //bat "docker pull ${imageName}:v${imageTag}"
-                    bat "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}"
-                    //sleep(time: 30, unit: 'SECONDS') // Sleep for 2 minute
+                    status = bat(script: "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Application deployed successfully in TEST environment."
+                    } else {
+                        error "Application failed to deploy in TEST environment."
+                    }
                 }
             }
         }
