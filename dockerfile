@@ -5,23 +5,20 @@ FROM python:3.9-slim
 RUN apt-get update && \
     apt-get install -y python3-tk
 
-# Copy dependency file
-COPY requirements.txt ./
-
 # Install Python packages
-RUN pip3 install --no-cache-dir -r ./requirements.txt
+RUN pip3 install requests
 
 # Set environment variable to use the host's display
 ENV DISPLAY=host.docker.internal:0
 
 # Create an application directory
-WORKDIR /weather
+WORKDIR /app
 
 # Set PYTHONPATH to include /app directory
-ENV PYTHONPATH=/weather/app
+ENV PYTHONPATH=/app
 
 # Copy the Tkinter application to the container
 COPY . .
 
 # Run the Tkinter app
-CMD ["python", "app/main.py"]
+CMD ["python", "./app/main.py"]
