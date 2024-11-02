@@ -5,7 +5,7 @@ FROM python:3.9-slim
 RUN apt-get update && \
     apt-get install -y python3-tk
 
-# Copy requirement file
+# Copy dependency file
 COPY requirements.txt ./
 
 # Install Python packages
@@ -24,4 +24,4 @@ ENV PYTHONPATH=/weather
 COPY . .
 
 # Run the Tkinter app
-CMD ["python", "./weather/main.py"]
+CMD ["python", "./weather/app/main.py"]
