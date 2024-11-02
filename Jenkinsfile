@@ -88,7 +88,7 @@ pipeline {
                 }
             }
         }
-        stage('Prepare Environment') {
+        stage('Prepare Test Environment') {
             steps {
                 script {
                     // Check docker deamon and find next docker image 
