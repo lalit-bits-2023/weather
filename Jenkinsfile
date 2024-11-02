@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     // Install project dependencies using pip
-                    echo 'Installaing Dependencies...'
+                    echo 'Installing Dependencies...'
 
                     def status = bat(script: "${python} -m pip install -r requirements.txt", returnStatus: true)
 
@@ -92,7 +92,7 @@ pipeline {
             steps {
                 script {
                     // Check docker deamon and find next docker image 
-                    echo "Preparing Build Environment..."
+                    echo "Preparing TEST Environment..."
 
                     // Run a Docker command and capture the exit status
                     def status = bat(script: "docker --version", returnStatus: true)
@@ -127,16 +127,16 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+        stage('Create Docker Image') {
             steps {
                 script {
                     // Build the docker image 
-                    echo "Building Docker Image..."
+                    echo "Creating Docker Image..."
                     dockerImage = docker.build("${imageName}:v${imageTag}")
                     if (dockerImage == null) {
-                        error("Docker image '${imageName}:v${imageTag}' creation failed.")
+                        error("Docker Image '${imageName}:v${imageTag}' creation failed.")
                     } else {
-                        echo "Docker image '${imageName}:v${imageTag}' build successfully."\
+                        echo "Docker Image '${imageName}:v${imageTag}' created successfully."
                     }
                 }
             }
@@ -167,7 +167,7 @@ pipeline {
             steps {
                 script {
                     // Pull Docker Image from DockerHub
-                    echo "Pulling Docker Image..."
+                    echo "Pulling Docker Image from DockerHub..."
                     def status = bat(script: "docker pull ${imageName}:v${imageTag}", returnStatus: true)
                     if (status == 0) {
                         echo "Docker Image '${imageName}:v${imageTag}' pulled successfully."
