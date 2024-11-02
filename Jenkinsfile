@@ -146,7 +146,7 @@ pipeline {
                 script {
                     // Push the docker image to DockerHub
                     echo "Pushing Docker Image..."
-                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                    docker.withRegistry('https://index.docker.io/v1/', 'Weather') {
                         dockerImage.push()
                     }
                     def response = bat (
@@ -167,8 +167,15 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
+                    echo "Pulling Docker Image..."
+                    def status = bat(script: "docker pull ${imageName}:v${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Docker Image '${imageName}:v${imageTag}' pulled successfully."
+                    } else {
+                        error "Failed to pull Docker Image '${imageName}:v${imageTag}'"
+                    }
                     echo "Deploying application..."
-                    bat "docker pull ${imageName}:v${imageTag}"
+                    //bat "docker pull ${imageName}:v${imageTag}"
                     bat "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}"
                     //sleep(time: 30, unit: 'SECONDS') // Sleep for 2 minute
                 }
