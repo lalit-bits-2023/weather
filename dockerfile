@@ -7,7 +7,7 @@ RUN apt-get update && \
 
 # Install Python packages
 # RUN pip3 install requests
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r ./requirements.txt
 
 # Set environment variable to use the host's display
 ENV DISPLAY=host.docker.internal:0
