@@ -18,10 +18,10 @@ ENV DISPLAY=host.docker.internal:0
 WORKDIR /weather
 
 # Set PYTHONPATH to include /app directory
-ENV PYTHONPATH=/weather
+ENV PYTHONPATH=/weather/app
 
 # Copy the Tkinter application to the container
 COPY . .
 
 # Run the Tkinter app
-CMD ["python", "weather/app/main.py"]
+CMD ["python", "app/main.py"]
