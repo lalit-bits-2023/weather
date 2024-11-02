@@ -195,4 +195,21 @@ pipeline {
             //}
         //}
     }
+
+    post {
+        success {
+            emailext(
+                subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: "The job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has completed successfully.",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
+        }
+        failure {
+            emailext(
+                subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: "The job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' has failed. Please check the console output for details.",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
+        }
+    }
 }
