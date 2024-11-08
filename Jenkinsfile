@@ -153,7 +153,7 @@ pipeline {
         }
         stage('Parallel Stages - Build Environments') {
             parallel {
-                stage('Build Development Environment') {
+                stage('Build DEV Environment') {
                     steps {
                         script {
                             // Build development enviromnment docker image 
@@ -164,10 +164,26 @@ pipeline {
                             } else {
                                 echo "Docker Image '${imageName}:DEV.V${imageTag}' created successfully."
                             }
+
+                            // Push dev docker image to DockerHub
+                            echo "Pushing Docker Image ${imageName}:DEV.V${imageTag} to docker registory..."
+                            docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                                dockerImage.push()
+                            def response = bat (
+                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
+                                returnStdout: true
+                            ).trim()
+                            response = response.split()[-1]
+                            if (response == "200") {
+                                echo "Docker Images '${imageName}:DEV.V${imageTag}' pushed successfully on DockerHub."
+                            } else {
+                                error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHeb."
+                            }
+                            bat "docker rmi ${imageName}:DEV.V${imageTag}"
                         }
                     }
                 }
-                stage('Build Staging Environment') {
+                stage('Build STG Environment') {
                     steps {
                         script {
                             // Build staging environment docker image 
@@ -178,10 +194,26 @@ pipeline {
                             } else {
                                 echo "Docker Image '${imageName}:STG.V${imageTag}' created successfully."
                             }
+
+                            // Push staging docker image to DockerHub
+                            echo "Pushing Docker Image ${imageName}:STG.V${imageTag} to docker registory..."
+                            docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                                dockerImage.push()
+                            def response = bat (
+                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/STG.V${imageTag}",
+                                returnStdout: true
+                            ).trim()
+                            response = response.split()[-1]
+                            if (response == "200") {
+                                echo "Docker Images '${imageName}:STG.V${imageTag}' pushed successfully on DockerHub."
+                            } else {
+                                error "Failed to push docker image '${imageName}:STG.V${imageTag}' on DockerHeb."
+                            }
+                            bat "docker rmi ${imageName}:STG.V${imageTag}"
                         }
                     }
                 }
-                stage('Build Production Environment') {
+                stage('Build PRD Environment') {
                     steps {
                         script {
                             // Build production environment docker image 
@@ -192,30 +224,24 @@ pipeline {
                             } else {
                                 echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
                             }
+
+                            // Push prod docker image to DockerHub
+                            echo "Pushing Docker Image ${imageName}:PRD.V${imageTag} to docker registory..."
+                            docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                                dockerImage.push()
+                            def response = bat (
+                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/PRD.V${imageTag}",
+                                returnStdout: true
+                            ).trim()
+                            response = response.split()[-1]
+                            if (response == "200") {
+                                echo "Docker Images '${imageName}:PRD.V${imageTag}' pushed successfully on DockerHub."
+                            } else {
+                                error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHeb."
+                            }
+                            bat "docker rmi ${imageName}:PRD.V${imageTag}"
                         }
                     }
-                }
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    // Push the docker image to DockerHub
-                    echo "Pushing Docker Image..."
-                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
-                        dockerImage.push()
-                    }
-                    def response = bat (
-                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
-                            returnStdout: true
-                    ).trim()
-                    response = response.split()[-1]
-                    if (response == "200") {
-                        echo "Docker Images '${imageName}:DEV.V${imageTag}' pushed successfully on DockerHub."
-                    } else {
-                        error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHeb."
-                    }
-                    bat "docker rmi ${imageName}:DEV.V${imageTag}"
                 }
             }
         }
