@@ -111,7 +111,6 @@ pipeline {
                 }
             }
         }
-
         stage('Prepare Environments Setup') {
             steps {
                 script {
@@ -169,6 +168,7 @@ pipeline {
                             echo "Pushing Docker Image ${imageName}:DEV.V${imageTag} to docker registory..."
                             docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
                                 dockerImage.push()
+                            }
                             def response = bat (
                                 script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
                                 returnStdout: true
@@ -199,6 +199,7 @@ pipeline {
                             echo "Pushing Docker Image ${imageName}:STG.V${imageTag} to docker registory..."
                             docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
                                 dockerImage.push()
+                            }
                             def response = bat (
                                 script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/STG.V${imageTag}",
                                 returnStdout: true
@@ -229,6 +230,7 @@ pipeline {
                             echo "Pushing Docker Image ${imageName}:PRD.V${imageTag} to docker registory..."
                             docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
                                 dockerImage.push()
+                            }
                             def response = bat (
                                 script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/PRD.V${imageTag}",
                                 returnStdout: true
@@ -245,39 +247,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Application') {
-            steps {
-                script {
-                    // Pull Docker Image from DockerHub
-                    echo "Pulling Docker Image from DockerHub..."
-                    def status = bat(script: "docker pull ${imageName}:DEV.V${imageTag}", returnStatus: true)
-                    if (status == 0) {
-                        echo "Docker Image '${imageName}:DEV.V${imageTag}' pulled successfully."
-                    } else {
-                        error "Failed to pull Docker Image '${imageName}:DEV.V${imageTag}'"
-                    }
-                    // Run Docker Container
-                    echo "Deploying application..."
-                    status = bat(script: "docker run --name WeatherApp.DEV.V${imageTag} -d ${imageName}:DEV.V${imageTag}", returnStatus: true)
-                    if (status == 0) {
-                        echo "Application deployed successfully in TEST environment."
-                    } else {
-                        error "Application failed to deploy in TEST environment."
-                    }
-                }
-            }
-        }
-        //stage('Stop Docker Conatiner') {
-            //steps {
-                //script {
-                    // Stop and remove container after the job completes
-                    //bat "docker stop WeatherApp.V${imageTag}"
-                    //bat "docker rm WeatherApp.V${imageTag}"
-                //}
-            //}
-        //}
     }
-
     post {
         success {
             emailext(
