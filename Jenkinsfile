@@ -58,9 +58,6 @@ pipeline {
                 script {
                     // Launch GUI (Tkinter) application
                     echo 'Launching Application...'
-                    //Use 'start' to run the Python application in a non-blocking way
-                    //def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
-                    //bat(script: "start ${python} app\\main.py", returnStatus: true)
                     def status = 0
                     bat "start ${python} app\\main.py"
                     if (status != 0) {
@@ -69,8 +66,6 @@ pipeline {
                     else{
                         echo ("Weather application launched successfully.")
                     }
-                    // Use 'start /B' to run the Python application in the background
-                    //bat(script: "start /B ${python} main.py", returnStatus: true)
                 }
             }
         }
@@ -117,11 +112,11 @@ pipeline {
             }
         }
 
-        stage('Prepare Environments') {
+        stage('Prepare Environment Setup') {
             steps {
                 script {
                     // Check docker deamon and find next docker image 
-                    echo "Preparing TEST Environment..."
+                    echo "Preparing Environment Setup..."
 
                     // Run a Docker command and capture the exit status
                     def status = bat(script: "docker --version", returnStatus: true)
@@ -137,17 +132,17 @@ pipeline {
                     imageTag = 1
                     while (true) {
                         def response = bat (
-                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/v${imageTag}",
+                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
                             returnStdout: true
                         ).trim()
 
                         response = response.split()[-1]
 
                         if (response == "200") {
-                            echo "Image '${imageName}:v${imageTag}' exists on Docker Hub."
+                            echo "Image '${imageName}:DEV.V${imageTag}' exists on Docker Hub."
                             imageTag += 1
                         } else if (response == "404") {
-                            echo "Next Image '${imageName}:v${imageTag}'"
+                            echo "Next Image '${imageName}:DEV.V${imageTag}'"
                             break
                         } else {
                             error "Error checking image version. HTTP Status: ${response}"
@@ -161,11 +156,11 @@ pipeline {
                 script {
                     // Build the docker image 
                     echo "Creating Docker Image..."
-                    dockerImage = docker.build("${imageName}:v${imageTag}")
+                    dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f dockerfile .")
                     if (dockerImage == null) {
-                        error("Docker Image '${imageName}:v${imageTag}' creation failed.")
+                        error("Docker Image '${imageName}:DEV.V${imageTag}' creation failed.")
                     } else {
-                        echo "Docker Image '${imageName}:v${imageTag}' created successfully."
+                        echo "Docker Image '${imageName}:DEV.V${imageTag}' created successfully."
                     }
                 }
             }
@@ -179,16 +174,16 @@ pipeline {
                         dockerImage.push()
                     }
                     def response = bat (
-                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/v${imageTag}",
+                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
                             returnStdout: true
                     ).trim()
                     response = response.split()[-1]
                     if (response == "200") {
-                        echo "Docker Images '${imageName}:${imageTag}' pushed successfully on DockerHub."
+                        echo "Docker Images '${imageName}:DEV.V${imageTag}' pushed successfully on DockerHub."
                     } else {
-                        error "Failed to push docker image '${imageName}:${imageTag}' on DockerHeb."
+                        error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHeb."
                     }
-                    bat "docker rmi ${imageName}:v${imageTag}"
+                    bat "docker rmi ${imageName}:DEV.V${imageTag}"
                 }
             }
         }
@@ -197,15 +192,15 @@ pipeline {
                 script {
                     // Pull Docker Image from DockerHub
                     echo "Pulling Docker Image from DockerHub..."
-                    def status = bat(script: "docker pull ${imageName}:v${imageTag}", returnStatus: true)
+                    def status = bat(script: "docker pull ${imageName}:DEV.V${imageTag}", returnStatus: true)
                     if (status == 0) {
-                        echo "Docker Image '${imageName}:v${imageTag}' pulled successfully."
+                        echo "Docker Image '${imageName}:DEV.V${imageTag}' pulled successfully."
                     } else {
-                        error "Failed to pull Docker Image '${imageName}:v${imageTag}'"
+                        error "Failed to pull Docker Image '${imageName}:DEV.V${imageTag}'"
                     }
                     // Run Docker Container
                     echo "Deploying application..."
-                    status = bat(script: "docker run --name WeatherApp.V${imageTag} -d ${imageName}:v${imageTag}", returnStatus: true)
+                    status = bat(script: "docker run --name WeatherApp.V${imageTag} -d ${imageName}:DEV.V${imageTag}", returnStatus: true)
                     if (status == 0) {
                         echo "Application deployed successfully in TEST environment."
                     } else {
