@@ -163,45 +163,7 @@ pipeline {
                     } else {
                         echo "Docker Image '${imageName}:DEV.V${imageTag}' created successfully."
                     }
-                }
-            }
-        }
-        stage('Build STG Environment') {
-            steps {
-                script {
-                    // Build staging environment docker image 
-                    echo "Creating Staging Docker Image..."
-                    dockerImage = docker.build("${imageName}:STG.V${imageTag}", "-f dockerfile .")
-                    if (dockerImage == null) {
-                        error("Docker Image '${imageName}:STG.V${imageTag}' creation failed.")
-                    } else {
-                        echo "Docker Image '${imageName}:STG.V${imageTag}' created successfully."
-                    }
-                }
-            }
-        }
 
-        stage('Build PRD Environment') {
-            steps {
-                script {
-                    // Build production environment docker image 
-                    echo "Creating Production Docker Image..."
-                    dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f dockerfile .")
-                    if (dockerImage == null) {
-                        error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
-                    } else {
-                        echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
-                    }
-                }
-            }
-        }
-            }
-        }
-        stage('Parallel Stages - Push Environments') {
-            parallel {
-            stage('Push Dev Image') {
-            steps {
-                script {
                     // Push the docker image to DockerHub
                     echo "Pushing Docker Image..."
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
@@ -217,13 +179,22 @@ pipeline {
                     } else {
                         error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHeb."
                     }
-                    bat "docker rmi ${imageName}:DEV.V${imageTag}"
+                    //bat "docker rmi ${imageName}:DEV.V${imageTag}"
                 }
             }
-            }
-            stage('Push Stag Image') {
+        }
+        stage('Build STG Environment') {
             steps {
                 script {
+                    // Build staging environment docker image 
+                    echo "Creating Staging Docker Image..."
+                    dockerImage = docker.build("${imageName}:STG.V${imageTag}", "-f dockerfile .")
+                    if (dockerImage == null) {
+                        error("Docker Image '${imageName}:STG.V${imageTag}' creation failed.")
+                    } else {
+                        echo "Docker Image '${imageName}:STG.V${imageTag}' created successfully."
+                    }
+
                     // Push the docker image to DockerHub
                     echo "Pushing Docker Image..."
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
@@ -242,10 +213,20 @@ pipeline {
                     bat "docker rmi ${imageName}:STG.V${imageTag}"
                 }
             }
-            }
-            stage('Push PRD Image') {
+        }
+
+        stage('Build PRD Environment') {
             steps {
                 script {
+                    // Build production environment docker image 
+                    echo "Creating Production Docker Image..."
+                    dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f dockerfile .")
+                    if (dockerImage == null) {
+                        error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
+                    } else {
+                        echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
+                    }
+
                     // Push the docker image to DockerHub
                     echo "Pushing Docker Image..."
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
@@ -264,7 +245,7 @@ pipeline {
                     bat "docker rmi ${imageName}:PRD.V${imageTag}"
                 }
             }
-            }
+        }
             }
         }
     }
