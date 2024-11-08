@@ -150,7 +150,7 @@ pipeline {
                 }
             }
         }
-        stage('Parallel Stages - Environment') {
+        stage('Parallel Stages - Build Environments') {
             parallel {
         stage('Build DEV Environment') {
             steps {
@@ -180,6 +180,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build PRD Environment') {
             steps {
                 script {
@@ -194,6 +195,53 @@ pipeline {
                 }
             }
         }
+            }
+        }
+        stage('Parallel Stages - Push Environments') {
+            parallel {
+            stage('Push Dev Image') {
+            steps {
+                script {
+                    // Push the docker image to DockerHub
+                    echo "Pushing Docker Image..."
+                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                        dockerImage.push("DEV.V${imageTag}")
+                    }
+                    def response = bat (
+                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
+                            returnStdout: true
+                    ).trim()
+                    response = response.split()[-1]
+                    if (response == "200") {
+                        echo "Docker Images '${imageName}:DEV.V${imageTag}' pushed successfully on DockerHub."
+                    } else {
+                        error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHeb."
+                    }
+                    bat "docker rmi ${imageName}:DEV.V${imageTag}"
+                }
+            }
+            }
+            stage('Push Stag Image') {
+            steps {
+                script {
+                    // Push the docker image to DockerHub
+                    echo "Pushing Docker Image..."
+                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                        dockerImage.push("STG.V${imageTag}")
+                    }
+                    def response = bat (
+                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/STG.V${imageTag}",
+                            returnStdout: true
+                    ).trim()
+                    response = response.split()[-1]
+                    if (response == "200") {
+                        echo "Docker Images '${imageName}:STG.V${imageTag}' pushed successfully on DockerHub."
+                    } else {
+                        error "Failed to push docker image '${imageName}:STG.V${imageTag}' on DockerHeb."
+                    }
+                    bat "docker rmi ${imageName}:STG.V${imageTag}"
+                }
+            }
             }
         }
     }
