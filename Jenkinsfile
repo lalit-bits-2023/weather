@@ -241,8 +241,52 @@ pipeline {
                             } else {
                                 error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHub."
                             }
-                            //bat "docker rmi ${imageName}:PRD.V${imageTag}"
+                            bat "docker rmi ${imageName}:PRD.V${imageTag}"
                         }
+                    }
+                }
+            }
+        }
+        stage('Deploy Development') {
+            steps {
+                script {
+                    // Pull Docker Image from DockerHub
+                    echo "Pulling Development Docker Image from DockerHub..."
+                    def status = bat(script: "docker pull ${imageName}:DEV.V${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Docker Image '${imageName}:DEV.V${imageTag}' pulled successfully."
+                    } else {
+                        error "Failed to pull Docker Image '${imageName}:DEV.V${imageTag}'"
+                    }
+                    // Run Docker Container
+                    echo "Deploying application in development environment..."
+                    status = bat(script: "docker run --name WeatherApp.${imageTag} -d ${imageName}:DEV.V${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Application deployed successfully in DEV environment."
+                    } else {
+                        error "Application failed to deploy in DEV environment."
+                    }
+                }
+            }
+        }
+        stage('Deploy Staging') {
+            steps {
+                script {
+                    // Pull Docker Image from DockerHub
+                    echo "Pulling Staging Docker Image from DockerHub..."
+                    def status = bat(script: "docker pull ${imageName}:STG.V${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Docker Image '${imageName}:STG.V${imageTag}' pulled successfully."
+                    } else {
+                        error "Failed to pull Docker Image '${imageName}:STG.V${imageTag}'"
+                    }
+                    // Run Docker Container
+                    echo "Deploying application in staging environment..."
+                    status = bat(script: "docker run --name WeatherApp.${imageTag} -d ${imageName}:STG.V${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Application deployed successfully in STAGING environment."
+                    } else {
+                        error "Application failed to deploy in STAGING environment."
                     }
                 }
             }
