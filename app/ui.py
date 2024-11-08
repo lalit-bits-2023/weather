@@ -18,8 +18,13 @@ class WeatherApp:
         self.city_entry = tk.Entry(main_frame, width=18, justify="center")  # Center text in entry
         self.city_entry.pack(pady=10)
 
+        default_value = "Chennai" # Set default value here
+        self.city_entry.insert(0, default_value)  # Insert default value at the start (index 0)
+
         get_weather_button = tk.Button(main_frame, text="Get Weather", font=("Arial", 13, "bold"), command=self.display_weather)
         get_weather_button.pack(pady=10)
+
+        root.after(3000, self.display_weather) # Automatically "press" the button after 100 milliseconds
 
         # Create a frame to hold the table
         self.table_frame = tk.Frame(main_frame)  # Nest table frame within main_frame
