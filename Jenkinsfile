@@ -8,7 +8,6 @@ pipeline {
         integrationTestcaseList = "integrationtestcase.txt" 
         def imageName = 'lalitbits2023/weather'
     }
-
     stages {
         stage('Clone Repository') {
             steps {
@@ -17,35 +16,39 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
         }
-        stage('Check Python Version') {
-            steps {
-                script {
-                    // Check python version 
-                    echo "Checking Python Version..."
+        stage('Parallel Stages') {
+            parallel {
+                stage('Validate Python Version') {
+                    steps {
+                        script {
+                            // Check python version 
+                            echo "Checking Python Version..."
 
-                    def version = bat(script: "${python} --version", returnStdout: true)
-                    version = version.split()[-1]
+                            def version = bat(script: "${python} --version", returnStdout: true)
+                            version = version.split()[-1]
 
-                    if (version == "${python_version}") {
-                        echo "Python Version : ${version} is correct."
-                    } else {
-                        error "Python Version : ${version} is not correct."
+                            if (version == "${python_version}") {
+                                echo "Python Version : ${version} is correct."
+                            } else {
+                                error "Python Version : ${version} is not correct."
+                            }
+                        }
                     }
                 }
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    // Install project dependencies using pip
-                    echo 'Installing Dependencies...'
+                stage('Install Python Dependencies') {
+                    steps {
+                        script {
+                            // Install project dependencies using pip
+                            echo 'Installing Dependencies...'
 
-                    def status = bat(script: "${python} -m pip install -r requirements.txt", returnStatus: true)
+                            def status = bat(script: "${python} -m pip install -r requirements.txt", returnStatus: true)
 
-                    if (status == 0) {
-                        echo "Dependencies installed successfully."
-                    } else {
-                        error "Failed to install dependencies."
+                            if (status == 0) {
+                                echo "Dependencies installed successfully."
+                            } else {
+                                error "Failed to install dependencies."
+                            }
+                        }
                     }
                 }
             }
@@ -92,7 +95,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Prepare Environments') {
             steps {
                 script {
