@@ -157,7 +157,7 @@ pipeline {
                         script {
                             // Build development enviromnment image 
                             echo "Creating Development Image..."
-                            dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f dockerfile .")
+                            dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f Dockerfile.dev .")
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:DEV.V${imageTag}' creation failed.")
                             } else {
@@ -188,7 +188,7 @@ pipeline {
                         script {
                             // Build staging environment image 
                             echo "Creating Staging Image..."
-                            dockerImage = docker.build("${imageName}:STG.V${imageTag}", "-f dockerfile .")
+                            dockerImage = docker.build("${imageName}:STG.V${imageTag}", "-f Dockerfile.stag .")
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:STG.V${imageTag}' creation failed.")
                             } else {
@@ -219,7 +219,7 @@ pipeline {
                         script {
                             // Build production environment docker image 
                             echo "Creating Production Image..."
-                            dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f dockerfile .")
+                            dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f Dockerfile.prod .")
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
                             } else {
