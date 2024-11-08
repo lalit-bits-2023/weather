@@ -243,6 +243,28 @@ pipeline {
                 }
             }
             }
+            stage('Push PRD Image') {
+            steps {
+                script {
+                    // Push the docker image to DockerHub
+                    echo "Pushing Docker Image..."
+                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                        dockerImage.push("PRD.V${imageTag}")
+                    }
+                    def response = bat (
+                            script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/PRD.V${imageTag}",
+                            returnStdout: true
+                    ).trim()
+                    response = response.split()[-1]
+                    if (response == "200") {
+                        echo "Docker Images '${imageName}:PRD.V${imageTag}' pushed successfully on DockerHub."
+                    } else {
+                        error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHeb."
+                    }
+                    bat "docker rmi ${imageName}:PRD.V${imageTag}"
+                }
+            }
+            }
             }
         }
     }
