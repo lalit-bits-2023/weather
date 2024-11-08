@@ -260,7 +260,7 @@ pipeline {
                     }
                     // Run Docker Container
                     echo "Deploying application in development environment..."
-                    status = bat(script: "docker run --name WeatherApp.${imageTag} -d ${imageName}:DEV.V${imageTag}", returnStatus: true)
+                    status = bat(script: "docker run --name WeatherApp.DEV.V${imageTag} -d ${imageName}:DEV.V${imageTag}", returnStatus: true)
                     if (status == 0) {
                         echo "Application deployed successfully in DEV environment."
                     } else {
@@ -282,7 +282,7 @@ pipeline {
                     }
                     // Run Docker Container
                     echo "Deploying application in staging environment..."
-                    status = bat(script: "docker run --name WeatherApp.${imageTag} -d ${imageName}:STG.V${imageTag}", returnStatus: true)
+                    status = bat(script: "docker run --name WeatherApp.STG.V${imageTag} -d ${imageName}:STG.V${imageTag}", returnStatus: true)
                     if (status == 0) {
                         echo "Application deployed successfully in STAGING environment."
                     } else {
