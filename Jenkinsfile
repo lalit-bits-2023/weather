@@ -16,7 +16,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/lalit-bits-2023/weather.git'
             }
         }
-        stage('Parallel Stages') {
+        stage('Parallel Stages - Build') {
             parallel {
                 stage('Validate Python Version') {
                     steps {
@@ -53,7 +53,7 @@ pipeline {
                 }
             }
         }
-        stage('Parallel Stages') {
+        stage('Parallel Stages - Test') {
             parallel {
                 stage('Unit Test') {
                     steps {
