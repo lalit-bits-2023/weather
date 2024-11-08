@@ -112,7 +112,7 @@ pipeline {
             }
         }
 
-        stage('Prepare Environment Setup') {
+        stage('Prepare Environments Setup') {
             steps {
                 script {
                     // Check docker deamon and find next docker image 
@@ -151,16 +151,48 @@ pipeline {
                 }
             }
         }
-        stage('Create Docker Image') {
-            steps {
-                script {
-                    // Build the docker image 
-                    echo "Creating Docker Image..."
-                    dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f dockerfile .")
-                    if (dockerImage == null) {
-                        error("Docker Image '${imageName}:DEV.V${imageTag}' creation failed.")
-                    } else {
-                        echo "Docker Image '${imageName}:DEV.V${imageTag}' created successfully."
+        stage('Parallel Stages - Build Environments') {
+            parallel {
+                stage('Build Development Environment') {
+                    steps {
+                        script {
+                            // Build development enviromnment docker image 
+                            echo "Creating Development Docker Image..."
+                            dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f dockerfile .")
+                            if (dockerImage == null) {
+                                error("Docker Image '${imageName}:DEV.V${imageTag}' creation failed.")
+                            } else {
+                                echo "Docker Image '${imageName}:DEV.V${imageTag}' created successfully."
+                            }
+                        }
+                    }
+                }
+                stage('Build Staging Environment') {
+                    steps {
+                        script {
+                            // Build staging environment docker image 
+                            echo "Creating Staging Docker Image..."
+                            dockerImage = docker.build("${imageName}:STG.V${imageTag}", "-f dockerfile .")
+                            if (dockerImage == null) {
+                                error("Docker Image '${imageName}:STG.V${imageTag}' creation failed.")
+                            } else {
+                                echo "Docker Image '${imageName}:STG.V${imageTag}' created successfully."
+                            }
+                        }
+                    }
+                }
+                stage('Build Production Environment') {
+                    steps {
+                        script {
+                            // Build production environment docker image 
+                            echo "Creating Production Docker Image..."
+                            dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f dockerfile .")
+                            if (dockerImage == null) {
+                                error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
+                            } else {
+                                echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
+                            }
+                        }
                     }
                 }
             }
