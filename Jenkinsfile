@@ -214,37 +214,6 @@ pipeline {
                         }
                     }
                 }
-                stage('Build PRD Environment') {
-                    steps {
-                        script {
-                            // Build production environment docker image 
-                            echo "Creating Production Docker Image..."
-                            dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f dockerfile .")
-                            if (dockerImage == null) {
-                                error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
-                            } else {
-                                echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
-                            }
-
-                            // Push prod docker image to DockerHub
-                            echo "Pushing Docker Image ${imageName}:PRD.V${imageTag} to docker registory..."
-                            docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
-                                dockerImage.push()
-                            }
-                            def response = bat (
-                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/PRD.V${imageTag}",
-                                returnStdout: true
-                            ).trim()
-                            response = response.split()[-1]
-                            if (response == "200") {
-                                echo "Docker Images '${imageName}:PRD.V${imageTag}' pushed successfully on DockerHub."
-                            } else {
-                                error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHeb."
-                            }
-                            bat "docker rmi ${imageName}:PRD.V${imageTag}"
-                        }
-                    }
-                }
             }
         }
     }
