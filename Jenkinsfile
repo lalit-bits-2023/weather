@@ -57,7 +57,7 @@ pipeline {
             steps {
                 script {
                     // Launch GUI (Tkinter) application
-                    echo 'Launching Application...'
+                    echo 'Launching Application in background...'
                     def status = 0
                     bat "start ${python} app\\main.py"
                     if (status != 0) {
@@ -200,7 +200,7 @@ pipeline {
                     }
                     // Run Docker Container
                     echo "Deploying application..."
-                    status = bat(script: "docker run --name WeatherApp.V${imageTag} -d ${imageName}:DEV.V${imageTag}", returnStatus: true)
+                    status = bat(script: "docker run --name WeatherApp.DEV.V${imageTag} -d ${imageName}:DEV.V${imageTag}", returnStatus: true)
                     if (status == 0) {
                         echo "Application deployed successfully in TEST environment."
                     } else {
