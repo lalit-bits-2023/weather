@@ -50,45 +50,49 @@ pipeline {
                 }
             }
         }
-        stage('Unit Tests') {
-            steps {
-                script {
-                    // Run unit testcase
-                    echo 'Running Unit Testcases...'
+        stage('Parallel Stages') {
+            parallel {
+                stage('Unit Test') {
+                    steps {
+                        script {
+                            // Run unit testcase
+                            echo 'Running Unit Testcases...'
 
-                    // Reading unit testcase file
-                    def testCases = readFile(unitTestcaseList).trim().split('\n')
+                            // Reading unit testcase file
+                            def testCases = readFile(unitTestcaseList).trim().split('\n')
 
-                    for (testCase in testCases) {
-                        echo "Running Testcase : ${testCase}"
-                        def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
-                        if (status != 0) { 
-                            error "Unit testcases '${testcase}' failed."
+                            for (testCase in testCases) {
+                                echo "Running Testcase : ${testCase}"
+                                def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
+                                if (status != 0) { 
+                                    error "Unit testcases '${testcase}' failed."
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('Integration Test') {
+                    steps {
+                        script {
+                            // Run integration testcase
+                            echo 'Running Integration Testcases...'
+
+                            // Reading integration testcase File
+                            def testCases = readFile(integrationTestcaseList).trim().split('\n')
+
+                            for (testCase in testCases) {
+                                echo "Running Testcase : ${testCase}"
+                                def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
+                                if (status != 0) { 
+                                    error "Interation testcases '${testcase}' failed."
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        stage('Integration Tests') {
-            steps {
-                script {
-                    // Run integration testcase
-                    echo 'Running Integration Testcases...'
-
-                    // Reading integration testcase File
-                    def testCases = readFile(integrationTestcaseList).trim().split('\n')
-
-                    for (testCase in testCases) {
-                        echo "Running Testcase : ${testCase}"
-                        def status = bat(script: "${python} -m unittest test.${testCase}", returnStatus: true)
-                        if (status != 0) { 
-                            error "Interation testcases '${testcase}' failed."
-                        }
-                    }
-                }
-            }
-        }
-        stage('Prepare Test Environment') {
+        stage('Prepare Environments') {
             steps {
                 script {
                     // Check docker deamon and find next docker image 
