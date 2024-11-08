@@ -53,6 +53,27 @@ pipeline {
                 }
             }
         }
+        stage('Sanity Test') {
+            steps {
+                script {
+                    // Launch GUI (Tkinter) application
+                    echo 'Launching Application...'
+                    //Use 'start' to run the Python application in a non-blocking way
+                    //def status = bat(script: "start ${python} app\\main.py", returnStatus: true)
+                    //bat(script: "start ${python} app\\main.py", returnStatus: true)
+                    def status = 0
+                    bat "start ${python} app\\main.py"
+                    if (status != 0) {
+                        echo ("Failed to start weather application")
+                    }
+                    else{
+                        echo ("Weather application launched successfully.")
+                    }
+                    // Use 'start /B' to run the Python application in the background
+                    //bat(script: "start /B ${python} main.py", returnStatus: true)
+                }
+            }
+        }
         stage('Parallel Stages - Test') {
             parallel {
                 stage('Unit Test') {
