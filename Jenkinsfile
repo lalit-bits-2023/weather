@@ -150,103 +150,98 @@ pipeline {
                 }
             }
         }
-
-                stage('Building DEV Env') {
-                    steps {
-                        script {
-                            // Build development enviromnment image 
-                            echo "Creating Development Image..."
-                            dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f Dockerfile.dev .")
-                            if (dockerImage == null) {
-                                error("Docker Image '${imageName}:DEV.V${imageTag}' creation failed.")
-                            } else {
-                                echo "Docker Image '${imageName}:DEV.V${imageTag}' created successfully."
-                            }
-
-                            // Push the docker image to DockerHub
-                            echo "Pushing Docker Image ${imageName}:DEV.V${imageTag} to DockerHub..."
-                            docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
-                                dockerImage.push("DEV.V${imageTag}")
-                            }
-                            def response = bat (
-                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
-                                returnStdout: true
-                            ).trim()
-                            response = response.split()[-1]
-                            if (response == "200") {
-                                echo "Docker Images '${imageName}:DEV.V${imageTag}' pushed successfully on DockerHub."
-                            } else {
-                                error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHub."
-                            }
-                            bat "docker rmi ${imageName}:DEV.V${imageTag}"
-                        }
+        stage('Building DEV Env') {
+            steps {
+                script {
+                    // Build development enviromnment image 
+                    echo "Creating Development Image..."
+                    dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f Dockerfile.dev .")
+                    if (dockerImage == null) {
+                        error("Docker Image '${imageName}:DEV.V${imageTag}' creation failed.")
+                    } else {
+                        echo "Docker Image '${imageName}:DEV.V${imageTag}' created successfully."
                     }
-                }
-                stage('Building TEST Env') {
-                    steps {
-                        script {
-                            // Build testing environment image 
-                            echo "Creating Testing Image..."
-                            sleep(time: 5, unit: 'SECONDS')
-                            dockerImage = docker.build("${imageName}:TEST.V${imageTag}", "-f Dockerfile.test .")
-                            if (dockerImage == null) {
-                                error("Docker Image '${imageName}:TEST.V${imageTag}' creation failed.")
-                            } else {
-                                echo "Docker Image '${imageName}:TEST.V${imageTag}' created successfully."
-                            }
-
-                            // Push the docker image to DockerHub
-                            echo "Pushing Docker Image ${imageName}:TEST.V${imageTag} to DockerHub..."
-                            docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
-                                dockerImage.push("TEST.V${imageTag}")
-                            }
-                            def response = bat (
-                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/TEST.V${imageTag}",
-                                returnStdout: true
-                            ).trim()
-                            response = response.split()[-1]
-                            if (response == "200") {
-                                echo "Docker Images '${imageName}:TEST.V${imageTag}' pushed successfully on DockerHub."
-                            } else {
-                                error "Failed to push docker image '${imageName}:TEST.V${imageTag}' on DockerHub."
-                            }
-                            bat "docker rmi ${imageName}:TEST.V${imageTag}"
-                        }
+                    // Push the docker image to DockerHub
+                    echo "Pushing Docker Image ${imageName}:DEV.V${imageTag} to DockerHub..."
+                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                        dockerImage.push("DEV.V${imageTag}")
                     }
-                }
-                stage('Build PRD Env') {
-                    steps {
-                        script {
-                            // Build production environment docker image 
-                            echo "Creating Production Image..."
-                            sleep(time: 10, unit: 'SECONDS')
-                            dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f Dockerfile.prod .")
-                            if (dockerImage == null) {
-                                error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
-                            } else {
-                                echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
-                            }
-
-                            // Push the docker image to DockerHub
-                            echo "Pushing Docker Image ${imageName}:PRD.V${imageTag} to DockerHub..."
-                            docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
-                                dockerImage.push("PRD.V${imageTag}")
-                            }
-                            def response = bat (
-                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/PRD.V${imageTag}",
-                                returnStdout: true
-                            ).trim()
-                            response = response.split()[-1]
-                            if (response == "200") {
-                                echo "Docker Images '${imageName}:PRD.V${imageTag}' pushed successfully on DockerHub."
-                            } else {
-                                error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHub."
-                            }
-                            bat "docker rmi ${imageName}:PRD.V${imageTag}"
-                        }
+                    def response = bat (
+                        script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/DEV.V${imageTag}",
+                        returnStdout: true
+                    ).trim()
+                    response = response.split()[-1]
+                    if (response == "200") {
+                        echo "Docker Images '${imageName}:DEV.V${imageTag}' pushed successfully on DockerHub."
+                    } else {
+                        error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHub."
                     }
+                    bat "docker rmi ${imageName}:DEV.V${imageTag}"
                 }
-
+            }
+        }
+        stage('Building TEST Env') {
+            steps {
+                script {
+                    // Build testing environment image 
+                    echo "Creating Testing Image..."
+                    dockerImage = docker.build("${imageName}:TEST.V${imageTag}", "-f Dockerfile.test .")
+                    if (dockerImage == null) {
+                        error("Docker Image '${imageName}:TEST.V${imageTag}' creation failed.")
+                    } else {
+                        echo "Docker Image '${imageName}:TEST.V${imageTag}' created successfully."
+                    }
+                    // Push the docker image to DockerHub
+                    echo "Pushing Docker Image ${imageName}:TEST.V${imageTag} to DockerHub..."
+                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                        dockerImage.push("TEST.V${imageTag}")
+                    }
+                    def response = bat (
+                        script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/TEST.V${imageTag}",
+                        returnStdout: true
+                    ).trim()
+                    response = response.split()[-1]
+                    if (response == "200") {
+                        echo "Docker Images '${imageName}:TEST.V${imageTag}' pushed successfully on DockerHub."
+                    } else {
+                        error "Failed to push docker image '${imageName}:TEST.V${imageTag}' on DockerHub."
+                    }
+                    bat "docker rmi ${imageName}:TEST.V${imageTag}"
+                }
+            }
+        }
+        stage('Deploying Application') {
+        parallel {
+        stage('Build PRD Env') {
+            steps {
+                script {
+                    // Build production environment docker image 
+                    echo "Creating Production Image..."
+                    dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f Dockerfile.prod .")
+                    if (dockerImage == null) {
+                        error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
+                    } else {
+                        echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
+                    }
+                    // Push the docker image to DockerHub
+                    echo "Pushing Docker Image ${imageName}:PRD.V${imageTag} to DockerHub..."
+                    docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
+                        dockerImage.push("PRD.V${imageTag}")
+                    }
+                    def response = bat (
+                        script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/PRD.V${imageTag}",
+                        returnStdout: true
+                    ).trim()
+                    response = response.split()[-1]
+                    if (response == "200") {
+                        echo "Docker Images '${imageName}:PRD.V${imageTag}' pushed successfully on DockerHub."
+                    } else {
+                        error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHub."
+                    }
+                    bat "docker rmi ${imageName}:PRD.V${imageTag}"
+                }
+            }
+        }
         stage('Deploy Development') {
             steps {
                 script {
@@ -290,6 +285,8 @@ pipeline {
                     }
                 }
             }
+        }
+        }
         }
         stage('Deploy Production') {
             steps {
