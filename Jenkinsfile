@@ -210,8 +210,6 @@ pipeline {
                 }
             }
         }
-        stage('Deploying Application') {
-        parallel {
         stage('Build PRD Env') {
             steps {
                 script {
@@ -242,6 +240,8 @@ pipeline {
                 }
             }
         }
+        stage('Deploying Application') {
+        parallel {
         stage('Deploy Development') {
             steps {
                 script {
@@ -286,8 +286,6 @@ pipeline {
                 }
             }
         }
-        }
-        }
         stage('Deploy Production') {
             steps {
                 script {
@@ -311,6 +309,8 @@ pipeline {
             }
         }
     }
+            }
+        }
     post {
         success {
             emailext(
