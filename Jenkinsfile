@@ -291,6 +291,28 @@ pipeline {
                 }
             }
         }
+        stage('Deploy Production') {
+            steps {
+                script {
+                    // Pull Docker Image from DockerHub
+                    echo "Pulling Production Docker Image from DockerHub..."
+                    def status = bat(script: "docker pull ${imageName}:PRD.V${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Docker Image '${imageName}:PRD.V${imageTag}' pulled successfully."
+                    } else {
+                        error "Failed to pull Docker Image '${imageName}:PRD.V${imageTag}'"
+                    }
+                    // Run Docker Container
+                    echo "Deploying application in production environment..."
+                    status = bat(script: "docker run --name WeatherApp.PRD.V${imageTag} -d ${imageName}:PRD.V${imageTag}", returnStatus: true)
+                    if (status == 0) {
+                        echo "Application deployed successfully in PRODUCTION environment."
+                    } else {
+                        error "Application failed to deploy in PRODUCTION environment."
+                    }
+                }
+            }
+        }
     }
     post {
         success {
