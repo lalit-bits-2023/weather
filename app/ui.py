@@ -24,7 +24,7 @@ class WeatherApp:
         get_weather_button = tk.Button(main_frame, text="Get Weather", font=("Arial", 13, "bold"), command=self.display_weather)
         get_weather_button.pack(pady=10)
 
-        root.after(3000, self.display_weather) # Automatically "press" the button after 100 milliseconds
+        root.after(5000, self.display_weather) # Automatically "press" the button after 100 milliseconds
 
         # Create a frame to hold the table
         self.table_frame = tk.Frame(main_frame)  # Nest table frame within main_frame
