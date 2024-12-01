@@ -151,8 +151,6 @@ pipeline {
             }
         }
         stage('Building Environments') {
-            parallel {
-                stage('Building Environments') {
     parallel {
         stage('Building DEV Env') {
             steps {
@@ -225,8 +223,7 @@ pipeline {
         }
     }
 }
-            }
-        }
+
         stage('Deploy Development') {
             steps {
                 script {
