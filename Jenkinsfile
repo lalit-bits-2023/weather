@@ -179,7 +179,7 @@ pipeline {
                             } else {
                                 error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHub."
                             }
-                            bat "docker rmi ${imageName}:DEV.V${imageTag}"
+                            //bat "docker rmi ${imageName}:DEV.V${imageTag}"
                         }
                     }
                 }
@@ -188,7 +188,7 @@ pipeline {
                         script {
                             // Build testing environment image 
                             echo "Creating Testing Image..."
-                            sleep(time: 5, unit: 'SECONDS')
+                            //sleep(time: 5, unit: 'SECONDS')
                             dockerImage = docker.build("${imageName}:TEST.V${imageTag}", "-f Dockerfile.test .")
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:TEST.V${imageTag}' creation failed.")
@@ -211,7 +211,7 @@ pipeline {
                             } else {
                                 error "Failed to push docker image '${imageName}:TEST.V${imageTag}' on DockerHub."
                             }
-                            bat "docker rmi ${imageName}:TEST.V${imageTag}"
+                            //bat "docker rmi ${imageName}:TEST.V${imageTag}"
                         }
                     }
                 }
@@ -220,7 +220,7 @@ pipeline {
                         script {
                             // Build production environment docker image 
                             echo "Creating Production Image..."
-                            sleep(time: 10, unit: 'SECONDS')
+                            //sleep(time: 10, unit: 'SECONDS')
                             dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f Dockerfile.prod .")
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
@@ -243,7 +243,7 @@ pipeline {
                             } else {
                                 error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHub."
                             }
-                            bat "docker rmi ${imageName}:PRD.V${imageTag}"
+                            //bat "docker rmi ${imageName}:PRD.V${imageTag}"
                         }
                     }
                 }
