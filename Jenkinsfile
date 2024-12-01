@@ -180,6 +180,7 @@ pipeline {
                                 error "Failed to push docker image '${imageName}:DEV.V${imageTag}' on DockerHub."
                             }
                             bat "docker rmi ${imageName}:DEV.V${imageTag}"
+                            sleep(time: 5, unit: 'SECONDS')
                         }
                     }
                 }
@@ -211,6 +212,7 @@ pipeline {
                                 error "Failed to push docker image '${imageName}:TEST.V${imageTag}' on DockerHub."
                             }
                             bat "docker rmi ${imageName}:TEST.V${imageTag}"
+                            sleep(time: 5, unit: 'SECONDS')
                         }
                     }
                 }
@@ -242,6 +244,7 @@ pipeline {
                                 error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHub."
                             }
                             bat "docker rmi ${imageName}:PRD.V${imageTag}"
+                            sleep(time: 5, unit: 'SECONDS')
                         }
                     }
                 }
