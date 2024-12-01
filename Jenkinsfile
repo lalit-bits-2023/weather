@@ -183,34 +183,34 @@ pipeline {
                         }
                     }
                 }
-                stage('Building STG Env') {
+                stage('Building TEST Env') {
                     steps {
                         script {
-                            // Build staging environment image 
-                            echo "Creating Staging Image..."
-                            dockerImage = docker.build("${imageName}:STG.V${imageTag}", "-f Dockerfile.stag .")
+                            // Build testing environment image 
+                            echo "Creating Testing Image..."
+                            dockerImage = docker.build("${imageName}:TEST.V${imageTag}", "-f Dockerfile.test .")
                             if (dockerImage == null) {
-                                error("Docker Image '${imageName}:STG.V${imageTag}' creation failed.")
+                                error("Docker Image '${imageName}:TEST.V${imageTag}' creation failed.")
                             } else {
-                                echo "Docker Image '${imageName}:STG.V${imageTag}' created successfully."
+                                echo "Docker Image '${imageName}:TEST.V${imageTag}' created successfully."
                             }
 
                             // Push the docker image to DockerHub
-                            echo "Pushing Docker Image ${imageName}:STG.V${imageTag} to DockerHub..."
+                            echo "Pushing Docker Image ${imageName}:TEST.V${imageTag} to DockerHub..."
                             docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
-                                dockerImage.push("STG.V${imageTag}")
+                                dockerImage.push("TEST.V${imageTag}")
                             }
                             def response = bat (
-                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/STG.V${imageTag}",
+                                script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/TEST.V${imageTag}",
                                 returnStdout: true
                             ).trim()
                             response = response.split()[-1]
                             if (response == "200") {
-                                echo "Docker Images '${imageName}:STG.V${imageTag}' pushed successfully on DockerHub."
+                                echo "Docker Images '${imageName}:TEST.V${imageTag}' pushed successfully on DockerHub."
                             } else {
-                                error "Failed to push docker image '${imageName}:STG.V${imageTag}' on DockerHub."
+                                error "Failed to push docker image '${imageName}:TEST.V${imageTag}' on DockerHub."
                             }
-                            bat "docker rmi ${imageName}:STG.V${imageTag}"
+                            bat "docker rmi ${imageName}:TEST.V${imageTag}"
                         }
                     }
                 }
@@ -269,24 +269,24 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Staging') {
+        stage('Deploy Testing') {
             steps {
                 script {
                     // Pull Docker Image from DockerHub
-                    echo "Pulling Staging Docker Image from DockerHub..."
-                    def status = bat(script: "docker pull ${imageName}:STG.V${imageTag}", returnStatus: true)
+                    echo "Pulling Testing Docker Image from DockerHub..."
+                    def status = bat(script: "docker pull ${imageName}:TEST.V${imageTag}", returnStatus: true)
                     if (status == 0) {
-                        echo "Docker Image '${imageName}:STG.V${imageTag}' pulled successfully."
+                        echo "Docker Image '${imageName}:TEST.V${imageTag}' pulled successfully."
                     } else {
-                        error "Failed to pull Docker Image '${imageName}:STG.V${imageTag}'"
+                        error "Failed to pull Docker Image '${imageName}:TEST.V${imageTag}'"
                     }
                     // Run Docker Container
-                    echo "Deploying application in staging environment..."
-                    status = bat(script: "docker run --name WeatherApp.STG.V${imageTag} -d ${imageName}:STG.V${imageTag}", returnStatus: true)
+                    echo "Deploying application in testing environment..."
+                    status = bat(script: "docker run --name WeatherApp.TEST.V${imageTag} -d ${imageName}:TEST.V${imageTag}", returnStatus: true)
                     if (status == 0) {
-                        echo "Application deployed successfully in STAGING environment."
+                        echo "Application deployed successfully in TESTING environment."
                     } else {
-                        error "Application failed to deploy in STAGING environment."
+                        error "Application failed to deploy in TESTING environment."
                     }
                 }
             }
