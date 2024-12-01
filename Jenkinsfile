@@ -158,6 +158,7 @@ pipeline {
                             // Build development enviromnment image 
                             echo "Creating Development Image..."
                             dockerImage = docker.build("${imageName}:DEV.V${imageTag}", "-f Dockerfile.dev .")
+                            bat "docker tag ${imageName}:DEV.V${imageTag} ${imageName}:latest"
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:DEV.V${imageTag}' creation failed.")
                             } else {
@@ -190,6 +191,7 @@ pipeline {
                             echo "Creating Testing Image..."
                             //sleep(time: 5, unit: 'SECONDS')
                             dockerImage = docker.build("${imageName}:TEST.V${imageTag}", "-f Dockerfile.test .")
+                            bat "docker tag ${imageName}:TEST.V${imageTag} ${imageName}:latest"
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:TEST.V${imageTag}' creation failed.")
                             } else {
@@ -222,6 +224,7 @@ pipeline {
                             echo "Creating Production Image..."
                             //sleep(time: 10, unit: 'SECONDS')
                             dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f Dockerfile.prod .")
+                            bat "docker tag ${imageName}:PRD.V${imageTag} ${imageName}:latest"
                             if (dockerImage == null) {
                                 error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
                             } else {
