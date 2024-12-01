@@ -210,33 +210,33 @@ pipeline {
                 }
             }
         }
-        stage('Build PRD Env') {
+        stage('Build STG Env') {
             steps {
                 script {
-                    // Build production environment docker image 
-                    echo "Creating Production Image..."
-                    dockerImage = docker.build("${imageName}:PRD.V${imageTag}", "-f Dockerfile.prod .")
+                    // Build staging environment docker image 
+                    echo "Creating Staging Image..."
+                    dockerImage = docker.build("${imageName}:STAG.V${imageTag}", "-f Dockerfile.stag .")
                     if (dockerImage == null) {
-                        error("Docker Image '${imageName}:PRD.V${imageTag}' creation failed.")
+                        error("Docker Image '${imageName}:STAG.V${imageTag}' creation failed.")
                     } else {
-                        echo "Docker Image '${imageName}:PRD.V${imageTag}' created successfully."
+                        echo "Docker Image '${imageName}:STAG.V${imageTag}' created successfully."
                     }
                     // Push the docker image to DockerHub
-                    echo "Pushing Docker Image ${imageName}:PRD.V${imageTag} to DockerHub..."
+                    echo "Pushing Docker Image ${imageName}:STAG.V${imageTag} to DockerHub..."
                     docker.withRegistry('https://index.docker.io/v1/', 'Notepad') {
-                        dockerImage.push("PRD.V${imageTag}")
+                        dockerImage.push("STAG.V${imageTag}")
                     }
                     def response = bat (
-                        script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/PRD.V${imageTag}",
+                        script: "curl -s -o NUL -w %%{http_code} https://hub.docker.com/v2/repositories/%imageName%/tags/STAG.V${imageTag}",
                         returnStdout: true
                     ).trim()
                     response = response.split()[-1]
                     if (response == "200") {
-                        echo "Docker Images '${imageName}:PRD.V${imageTag}' pushed successfully on DockerHub."
+                        echo "Docker Images '${imageName}:STAG.V${imageTag}' pushed successfully on DockerHub."
                     } else {
-                        error "Failed to push docker image '${imageName}:PRD.V${imageTag}' on DockerHub."
+                        error "Failed to push docker image '${imageName}:STAG.V${imageTag}' on DockerHub."
                     }
-                    bat "docker rmi ${imageName}:PRD.V${imageTag}"
+                    bat "docker rmi ${imageName}:STAG.V${imageTag}"
                 }
             }
         }
@@ -286,24 +286,24 @@ pipeline {
                         }
                     }
                 }
-                stage('Deploy Production') {
+                stage('Deploy Staging') {
                     steps {
                         script {
                             // Pull Docker Image from DockerHub
-                            echo "Pulling Production Docker Image from DockerHub..."
-                            def status = bat(script: "docker pull ${imageName}:PRD.V${imageTag}", returnStatus: true)
+                            echo "Pulling Staging Docker Image from DockerHub..."
+                            def status = bat(script: "docker pull ${imageName}:STAG.V${imageTag}", returnStatus: true)
                             if (status == 0) {
-                                echo "Docker Image '${imageName}:PRD.V${imageTag}' pulled successfully."
+                                echo "Docker Image '${imageName}:STAG.V${imageTag}' pulled successfully."
                             } else {
-                                error "Failed to pull Docker Image '${imageName}:PRD.V${imageTag}'"
+                                error "Failed to pull Docker Image '${imageName}:STAG.V${imageTag}'"
                             }
                             // Run Docker Container
-                            echo "Deploying application in production environment..."
-                            status = bat(script: "docker run --name WeatherApp.PRD.V${imageTag} -d ${imageName}:PRD.V${imageTag}", returnStatus: true)
+                            echo "Deploying application in staging environment..."
+                            status = bat(script: "docker run --name WeatherApp.STAG.V${imageTag} -d ${imageName}:STAG.V${imageTag}", returnStatus: true)
                             if (status == 0) {
-                                echo "Application deployed successfully in PRODUCTION environment."
+                                echo "Application deployed successfully in STAGING environment."
                             } else {
-                                error "Application failed to deploy in PRODUCTION environment."
+                                error "Application failed to deploy in STAGING environment."
                             }
                         }
                     }
